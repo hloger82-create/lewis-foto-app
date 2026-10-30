@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.SafetyDivider
 import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material.icons.filled.Waves
@@ -209,21 +208,6 @@ fun SpotDetailScreen(
                         spot.safety.forEach { item ->
                             Text(text = "• $item", style = MaterialTheme.typography.bodyMedium)
                         }
-                    }
-                }
-
-                ExpandableSectionCard(title = "Anfahrt", icon = Icons.Filled.Place) {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(
-                            spot.arrival.fromStornoway,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(
-                            spot.arrival.description,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
                     }
                 }
 
