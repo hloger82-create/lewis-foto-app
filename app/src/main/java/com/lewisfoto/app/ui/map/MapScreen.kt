@@ -64,12 +64,25 @@ import com.lewisfoto.app.ui.components.MotifDot
 import com.lewisfoto.app.ui.components.ProbabilityBadge
 import com.lewisfoto.app.util.WeatherService
 import com.lewisfoto.app.viewmodel.AppViewModel
+import org.osmdroid.tileprovider.MapTileProviderBasic
+import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.tileprovider.tilesource.XYTileSource
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.util.MapTileIndex
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.TilesOverlay
+
+private class RainViewerTileSource(host: String, private val path: String) : OnlineTileSourceBase(
+    "RainViewer", 0, 7, 256, ".png", arrayOf(host)
+) {
+    override fun getTileURLString(pMapTileIndex: Long): String {
+        val z = MapTileIndex.getZoom(pMapTileIndex)
+        val x = MapTileIndex.getX(pMapTileIndex)
+        val y = MapTileIndex.getY(pMapTileIndex)
+        return "$host$path/256/$z/$x/$y/2/1_1.png"
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,11 +98,11 @@ fun MapScreen(
     val customCoords by viewModel.customCoords.collectAsStateWithLifecycle()
     var activeFilter by remember { mutableStateOf(motif) }
     var radarOn by remember { mutableStateOf(false) }
-    var radarTimestamp by remember { mutableStateOf<Long?>(null) }
+    var radarFrame by remember { mutableStateOf<Pair<String, String>?>(null) }
 
     LaunchedEffect(radarOn) {
-        if (radarOn && radarTimestamp == null) {
-            WeatherService.rainViewerLatestTimestamp().onSuccess { radarTimestamp = it }
+        if (radarOn && radarFrame == null) {
+            WeatherService.rainViewerLatestFrame().onSuccess { radarFrame = it }
         }
     }
 
@@ -125,17 +138,16 @@ fun MapScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    DisposableEffect(radarOn, radarTimestamp) {
-        if (radarOn && radarTimestamp != null) {
-            val ts = radarTimestamp!!
-            val tileSource = XYTileSource(
-                "RainViewer", 0, 18, 256, ".png",
-                arrayOf("https://tilecache.rainviewer.com")
-            ) { x, y, z ->
-                "https://tilecache.rainviewer.com/v4/composite/$ts/256/$z/$x/$y.png"
-            }
-            val overlay = TilesOverlay(tileSource, context)
+    DisposableEffect(radarOn, radarFrame) {
+        val frame = radarFrame
+        if (radarOn && frame != null) {
+            val (host, path) = frame
+            val tileSource = RainViewerTileSource(host, path)
+            val provider = MapTileProviderBasic(context)
+            provider.setTileSource(tileSource)
+            val overlay = TilesOverlay(provider, context)
             mapView.overlayManager.add(overlay)
+            mapView.invalidate()
             onDispose { mapView.overlayManager.remove(overlay) }
         } else {
             onDispose { }
