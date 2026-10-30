@@ -99,21 +99,10 @@ fun MapScreen(
     var activeFilter by remember { mutableStateOf(motif) }
     var radarOn by remember { mutableStateOf(false) }
     var radarFrames by remember { mutableStateOf<Pair<String, List<String>>?>(null) }
-    var radarIndex by remember { mutableStateOf(0) }
 
     LaunchedEffect(radarOn) {
         if (radarOn && radarFrames == null) {
             WeatherService.rainViewerFrames().onSuccess { radarFrames = it }
-        }
-    }
-
-    LaunchedEffect(radarOn, radarFrames) {
-        if (radarOn && radarFrames != null) {
-            while (true) {
-                kotlinx.coroutines.delay(700)
-                val f = radarFrames!!
-                if (f.second.isNotEmpty()) radarIndex = (radarIndex + 1) % f.second.size
-            }
         }
     }
 
@@ -149,11 +138,11 @@ fun MapScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    DisposableEffect(radarOn, radarIndex, radarFrames) {
+    DisposableEffect(radarOn, radarFrames) {
         val frames = radarFrames
         if (radarOn && frames != null && frames.second.isNotEmpty()) {
             val (host, paths) = frames
-            val path = paths[radarIndex % paths.size]
+            val path = paths.last()
             val tileSource = RainViewerTileSource(host, path)
             val provider = MapTileProviderBasic(context)
             provider.setTileSource(tileSource)
@@ -204,7 +193,7 @@ fun MapScreen(
                     IconToggleButton(checked = radarOn, onCheckedChange = { radarOn = it }) {
                         Icon(
                             Icons.Filled.CloudQueue,
-                            contentDescription = "Niederschlagsradar (animiert)",
+                            contentDescription = "Niederschlagsradar",
                             tint = if (radarOn) Color.White else Color.White.copy(alpha = 0.6f)
                         )
                     }
