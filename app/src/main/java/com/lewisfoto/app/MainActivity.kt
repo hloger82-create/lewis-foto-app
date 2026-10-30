@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
@@ -86,7 +87,7 @@ fun LewisFotoNav(viewModel: AppViewModel) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            NavigationBar(modifier = Modifier.height(58.dp)) {
+            NavigationBar(modifier = Modifier.height(58.dp).navigationBarsPadding()) {
                 destinations.forEach { dest ->
                     NavigationBarItem(
                         selected = currentRoute == dest.route,
