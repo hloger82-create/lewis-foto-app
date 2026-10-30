@@ -7,15 +7,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -40,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lewisfoto.app.data.Motif
@@ -83,100 +83,102 @@ fun HomeScreen(
     }
 
     Scaffold { padding ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(padding)
         ) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(170.dp)
-                        .background(
-                            Brush.verticalGradient(listOf(Color(0xFF0B3D4A), Color(0xFF2E8CA3)))
-                        )
-                        .padding(20.dp),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Column {
-                        Text(
-                            text = "Natur- & Wildlife-Fotografie",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "Lewis & Harris, Äußere Hebriden",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFFDCEFF3)
-                        )
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(top = 10.dp)
-                                .clickable { showDatePicker = true }
-                                .background(
-                                    Color(0x33FFFFFF),
-                                    RoundedCornerShape(999.dp)
-                                )
-                                .padding(horizontal = 12.dp, vertical = 6.dp)
-                        ) {
-                            Icon(
-                                Icons.Filled.CalendarMonth,
-                                contentDescription = "Reisedatum",
-                                tint = Color.White
-                            )
-                            Text(
-                                text = " Reise: ${tripDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMAN))} · ${season.labelDe}",
-                                color = Color.White,
-                                style = MaterialTheme.typography.labelLarge,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
-                }
-            }
-
-            item {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = "Saisonhinweise für dein Reisedatum",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(132.dp)
+                    .background(
+                        Brush.verticalGradient(listOf(Color(0xFF0B3D4A), Color(0xFF2E8CA3)))
                     )
-                    notes.forEach { note ->
+                    .padding(16.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Column {
+                    Text(
+                        text = "Natur- & Wildlife-Fotografie",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = "Lewis & Harris, Äußere Hebriden",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFFDCEFF3),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .clickable { showDatePicker = true }
+                            .background(
+                                Color(0x33FFFFFF),
+                                RoundedCornerShape(999.dp)
+                            )
+                            .padding(horizontal = 12.dp, vertical = 5.dp)
+                    ) {
+                        Icon(
+                            Icons.Filled.CalendarMonth,
+                            contentDescription = "Reisedatum",
+                            tint = Color.White
+                        )
                         Text(
-                            text = "• $note",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(top = 4.dp)
+                            text = " Reise: ${tripDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMAN))} · ${season.labelDe}",
+                            color = Color.White,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
             }
 
-            item {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
                 Text(
-                    text = "Fotomotiv wählen",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    text = "Saisonhinweise für dein Reisedatum",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold
                 )
+                notes.take(4).forEach { note ->
+                    Text(
+                        text = "• $note",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 3.dp),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
 
-            item {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.height(420.dp)
-                ) {
-                    items(viewModel.motifs) { motif ->
-                        MotifTile(motif = motif, onClick = { onMotifClick(motif) })
-                    }
+            Text(
+                text = "Fotomotiv wählen",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            )
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp, bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                items(viewModel.motifs) { motif ->
+                    MotifTile(motif = motif, onClick = { onMotifClick(motif) })
                 }
             }
         }
@@ -188,24 +190,27 @@ private fun MotifTile(motif: Motif, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(84.dp)
+            .aspectRatio(1.9f)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color(motif.colorHex)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(10.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            MotifIcon(motif = motif, size = 26)
+            MotifIcon(motif = motif, size = 24)
             Text(
                 text = motif.labelDe,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
