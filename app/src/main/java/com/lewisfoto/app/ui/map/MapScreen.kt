@@ -120,7 +120,6 @@ fun MapScreen(
                 snippet = "${spot.motif.labelDe} · ${rating?.probability ?: 0} %"
                 icon = coloredPin(context, spot.motif)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                relatedMessageLayout = null
                 setOnMarkerClickListener { _, _ ->
                     onSpotClick(spot)
                     true
