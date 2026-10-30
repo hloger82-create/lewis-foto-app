@@ -172,7 +172,7 @@ fun HomeScreen(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.height(460.dp)
+                    modifier = Modifier.height(420.dp)
                 ) {
                     items(viewModel.motifs) { motif ->
                         MotifTile(motif = motif, onClick = { onMotifClick(motif) })
@@ -188,22 +188,22 @@ private fun MotifTile(motif: Motif, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(104.dp)
+            .height(84.dp)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = Color(motif.colorHex)),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(14.dp),
+                .padding(10.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            MotifIcon(motif = motif, size = 32)
+            MotifIcon(motif = motif, size = 26)
             Text(
                 text = motif.labelDe,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold
             )

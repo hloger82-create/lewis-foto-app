@@ -1,6 +1,8 @@
 package com.lewisfoto.app.ui.detail
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowDown
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -21,7 +25,7 @@ import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.SafetyDivider
-import androidx.compose.material.icons.filled.Waves
+import androidx.compose.material.icons.filled.Tide
 import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,6 +40,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -138,17 +145,20 @@ fun SpotDetailScreen(
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 if (rating != null) {
-                    SectionCard(title = "Häufigkeit & Wahrscheinlichkeit (${season.labelDe})") {
+                    ExpandableSectionCard(
+                        title = "Häufigkeit & Wahrscheinlichkeit (${season.labelDe})",
+                        expandedByDefault = true
+                    ) {
                         RatingBars(frequency = rating.frequency, probability = rating.probability)
                     }
                 }
 
-                SectionCard(title = "Beste Zeit", icon = Icons.Filled.LightMode) {
+                ExpandableSectionCard(title = "Beste Zeit", icon = Icons.Filled.LightMode) {
                     Text(spot.bestTimeOfDay, style = MaterialTheme.typography.bodyMedium)
                 }
 
                 if (spot.tide != null) {
-git                    SectionCard(title = "Gezeiten", icon = Icons.Filled.Waves) {
+                    ExpandableSectionCard(title = "Gezeiten", icon = Icons.Filled.Tide) {
                         Text(
                             text = if (spot.tide!!.bestAroundLowTide) "Um Niedrigwasser (Ebbe)" else "Um Hochwasser (Flut)",
                             style = MaterialTheme.typography.bodyMedium,
@@ -162,7 +172,7 @@ git                    SectionCard(title = "Gezeiten", icon = Icons.Filled.Waves
                     }
                 }
 
-                SectionCard(title = "Tipps zur Location", icon = Icons.Filled.TipsAndUpdates) {
+                ExpandableSectionCard(title = "Tipps zur Location", icon = Icons.Filled.TipsAndUpdates) {
                     spot.tips.forEach { tip ->
                         Text(
                             text = "• $tip",
@@ -172,7 +182,7 @@ git                    SectionCard(title = "Gezeiten", icon = Icons.Filled.Waves
                     }
                 }
 
-                SectionCard(title = "Sicherheit & Ethik", icon = Icons.Filled.SafetyDivider) {
+                ExpandableSectionCard(title = "Sicherheit & Ethik", icon = Icons.Filled.SafetyDivider) {
                     spot.safety.forEach { s ->
                         Text(
                             text = "• $s",
@@ -182,7 +192,7 @@ git                    SectionCard(title = "Gezeiten", icon = Icons.Filled.Waves
                     }
                 }
 
-                SectionCard(title = "Anfahrt", icon = Icons.Filled.Place) {
+                ExpandableSectionCard(title = "Anfahrt", icon = Icons.Filled.Place) {
                     Text(
                         spot.arrival.fromStornoway,
                         style = MaterialTheme.typography.bodyMedium,
@@ -195,7 +205,7 @@ git                    SectionCard(title = "Gezeiten", icon = Icons.Filled.Waves
                     )
                 }
 
-                SectionCard(title = "Parkmöglichkeit", icon = Icons.Filled.DirectionsCar) {
+                ExpandableSectionCard(title = "Parkmöglichkeit", icon = Icons.Filled.DirectionsCar) {
                     Text(spot.parking.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                     Text(
                         spot.parking.note,
@@ -204,8 +214,16 @@ git                    SectionCard(title = "Gezeiten", icon = Icons.Filled.Waves
                     )
                 }
 
-                SectionCard(title = "Koordinaten & Route", icon = Icons.Filled.LocationOn) {
+                ExpandableSectionCard(title = "Koordinaten & Route", icon = Icons.Filled.LocationOn) {
                     Text("${spot.lat}, ${spot.lon}", style = MaterialTheme.typography.bodyMedium)
+                    if (spot.what3words != null) {
+                        Text(
+                            "what3words: ${spot.what3words}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
                     OutlinedButton(
                         onClick = { GeoUtils.openNavigation(context, spot.lat, spot.lon, spot.name) },
                         modifier = Modifier.padding(top = 8.dp)
@@ -214,7 +232,7 @@ git                    SectionCard(title = "Gezeiten", icon = Icons.Filled.Waves
                     }
                 }
 
-                SectionCard(title = "Datenquellen") {
+                ExpandableSectionCard(title = "Datenquellen") {
                     spot.sources.forEach { source ->
                         Text("• $source", style = MaterialTheme.typography.bodySmall)
                     }
@@ -225,19 +243,27 @@ git                    SectionCard(title = "Gezeiten", icon = Icons.Filled.Waves
 }
 
 @Composable
-private fun SectionCard(
+private fun ExpandableSectionCard(
     title: String,
     icon: ImageVector? = null,
+    expandedByDefault: Boolean = false,
     content: @Composable () -> Unit
 ) {
+    var expanded by remember { mutableStateOf(expandedByDefault) }
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = !expanded }
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 if (icon != null) {
                     Icon(
                         imageVector = icon,
@@ -249,10 +275,20 @@ private fun SectionCard(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = if (expanded) Icons.AutoMirrored.Filled.KeyboardArrowUp else Icons.AutoMirrored.Filled.KeyboardArrowDown,
+                    contentDescription = if (expanded) "Einklappen" else "Ausklappen",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            Box(modifier = Modifier.padding(top = 10.dp)) { content() }
+            AnimatedVisibility(visible = expanded) {
+                Box(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+                    content()
+                }
+            }
         }
     }
 }
