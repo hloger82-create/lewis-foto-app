@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.WbCloudy
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -39,6 +40,7 @@ import com.lewisfoto.app.ui.map.MapScreen
 import com.lewisfoto.app.ui.settings.SettingsScreen
 import com.lewisfoto.app.ui.sources.SourcesScreen
 import com.lewisfoto.app.ui.theme.LewisFotoTheme
+import com.lewisfoto.app.ui.weather.WeatherScreen
 import com.lewisfoto.app.viewmodel.AppViewModel
 import org.osmdroid.config.Configuration
 import java.io.File
@@ -76,6 +78,7 @@ fun LewisFotoNav(viewModel: AppViewModel) {
     val destinations = listOf(
         BottomDestination("home", "Start", Icons.Filled.Home),
         BottomDestination("map", "Karte", Icons.Filled.Explore),
+        BottomDestination("weather", "Wetter", Icons.Filled.WbCloudy),
         BottomDestination("favorites", "Merkliste", Icons.Filled.Bookmarks),
         BottomDestination("sources", "Quellen", Icons.Filled.Info),
         BottomDestination("settings", "Einstellungen", Icons.Filled.Settings)
@@ -116,6 +119,9 @@ fun LewisFotoNav(viewModel: AppViewModel) {
                     viewModel = viewModel,
                     onMotifClick = { motif -> navController.navigate("map/${motif.name}") }
                 )
+            }
+            composable("weather") {
+                WeatherScreen(viewModel = viewModel)
             }
             composable("map") {
                 MapScreen(
