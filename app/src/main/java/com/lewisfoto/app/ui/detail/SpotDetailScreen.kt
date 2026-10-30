@@ -58,7 +58,9 @@ import com.lewisfoto.app.ui.components.MotifDot
 import com.lewisfoto.app.ui.components.ProbabilityBadge
 import com.lewisfoto.app.ui.components.RatingBars
 import com.lewisfoto.app.util.GeoUtils
+import com.lewisfoto.app.util.TideCalculator
 import com.lewisfoto.app.viewmodel.AppViewModel
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -178,7 +180,9 @@ fun SpotDetailScreen(
                     Text(spot.bestTimeOfDay, style = MaterialTheme.typography.bodyMedium)
                 }
 
-                if (spot.tide != null) {
+                if (spot.tide != null && spot.tide!!.relevant) {
+                    val nextTides = remember(spot.id) { TideCalculator.nextEvents(spot.lat, spot.lon) }
+                    val tf = DateTimeFormatter.ofPattern("dd.MM. HH:mm")
                     ExpandableSectionCard(title = "Gezeiten", icon = Icons.Filled.Waves) {
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(
@@ -191,6 +195,19 @@ fun SpotDetailScreen(
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                            Text(
+                                "Nächste Gezeiten (Näherung, mondbasiert):",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                            nextTides.forEach { ev ->
+                                Text(
+                                    "${if (ev.high) "🌊 Hochwasser" else "🏖 Ebbe"}  ${ev.time.format(tf)} Uhr",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = if (ev.high) MaterialTheme.colorScheme.primary else Color(0xFFB07C1F)
+                                )
+                            }
                         }
                     }
                 }
