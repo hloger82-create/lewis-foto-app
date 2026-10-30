@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lewisfoto.app.data.FotoSpot
@@ -75,7 +76,7 @@ fun SpotDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(spot.name) },
+                title = { Text(spot.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
@@ -107,42 +108,47 @@ fun SpotDetailScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
+                    .height(96.dp)
                     .background(
                         Brush.verticalGradient(
                             listOf(Color(0xFF0B3D4A), Color(spot.motif.colorHex))
                         )
                     )
-                    .padding(18.dp),
+                    .padding(14.dp),
                 contentAlignment = Alignment.BottomStart
             ) {
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        MotifDot(motif = spot.motif, size = 14)
+                        MotifDot(motif = spot.motif, size = 12)
                         Text(
                             text = "  ${spot.motif.labelDe}",
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f),
                             color = Color.White,
                             fontWeight = FontWeight.Bold
                         )
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 6.dp)
+                        modifier = Modifier.padding(top = 5.dp)
                     ) {
                         ProbabilityBadge(rating?.probability ?: 0)
                         Text(
                             text = "  Saison: ${season.labelDe}",
                             color = Color(0xFFE8F4F6),
-                            style = MaterialTheme.typography.bodySmall
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
             }
 
             Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
+                modifier = Modifier.padding(14.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 if (rating != null) {
                     ExpandableSectionCard(
@@ -252,16 +258,16 @@ private fun ExpandableSectionCard(
     var expanded by remember { mutableStateOf(expandedByDefault) }
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { expanded = !expanded }
-                    .padding(16.dp),
+                    .padding(14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (icon != null) {
@@ -276,6 +282,8 @@ private fun ExpandableSectionCard(
                     text = title,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
@@ -285,7 +293,7 @@ private fun ExpandableSectionCard(
                 )
             }
             AnimatedVisibility(visible = expanded) {
-                Box(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+                Box(modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 14.dp)) {
                     content()
                 }
             }
