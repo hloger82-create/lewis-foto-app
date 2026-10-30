@@ -2,7 +2,8 @@ package com.lewisfoto.app.data
 
 data class ParkingInfo(
     val name: String,
-    val note: String
+    val note: String,
+    val distanceToSpot: String = ""
 )
 
 data class ArrivalInfo(
@@ -17,7 +18,6 @@ data class TideInfo(
 
 data class Rating(
     val season: Season,
-    val frequency: Int,
     val probability: Int
 )
 
