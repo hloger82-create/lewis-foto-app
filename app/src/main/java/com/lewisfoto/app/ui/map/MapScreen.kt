@@ -72,6 +72,14 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.TilesOverlay
 
+private class RainViewerTileSource(private val ts: Long) : OnlineTileSourceBase(
+    "RainViewer", 0, 18, 256, ".png",
+    arrayOf("https://tilecache.rainviewer.com/v4/composite")
+) {
+    override fun getTileURLString(pMapTileIndex: Long): String =
+        "https://tilecache.rainviewer.com/v4/composite/$ts/256/${MapTileIndex.getZoom(pMapTileIndex)}/${MapTileIndex.getX(pMapTileIndex)}/${MapTileIndex.getY(pMapTileIndex)}.png"
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
@@ -129,17 +137,7 @@ fun MapScreen(
     DisposableEffect(radarOn, radarTimestamp) {
         if (radarOn && radarTimestamp != null) {
             val ts = radarTimestamp!!
-            val tileSource = object : OnlineTileSourceBase(
-                "RainViewer", 0, 18, 256, ".png",
-                arrayOf("https://tilecache.rainviewer.com/v4/composite")
-            ) {
-                override fun getTileURLString(pMapTileIndex: Long): String =
-                    "https://tilecache.rainviewer.com/v4/composite/$ts/256/${MapTileIndex.getZoom(pMapTileIndex)}/${MapTileIndex.getX(pMapTileIndex)}/${MapTileIndex.getY(pMapTileIndex)}.png"
-            }
-            val overlay = TilesOverlay(tileSource, context).apply {
-                isEnabled = true
-                opacity = 0.6
-            }
+            val overlay = TilesOverlay(RainViewerTileSource(ts), context)
             mapView.overlayManager.add(overlay)
             onDispose { mapView.overlayManager.remove(overlay) }
         } else {
