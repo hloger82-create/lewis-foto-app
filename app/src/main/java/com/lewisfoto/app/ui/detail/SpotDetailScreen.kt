@@ -54,6 +54,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lewisfoto.app.data.FotoSpot
+import com.lewisfoto.app.ui.components.CoordPickerDialog
 import com.lewisfoto.app.ui.components.MotifDot
 import com.lewisfoto.app.ui.components.ProbabilityBadge
 import com.lewisfoto.app.ui.components.RatingBars
@@ -72,6 +73,21 @@ fun SpotDetailScreen(
     val favorites by viewModel.favorites.collectAsStateWithLifecycle()
     val isFavorite = spot.id in favorites
     val rating = spot.ratingFor(season)
+    val customCoords by viewModel.customCoords.collectAsStateWithLifecycle()
+    val coords = customCoords[spot.id] ?: (spot.lat to spot.lon)
+    var showCoordPicker by remember { mutableStateOf(false) }
+
+    if (showCoordPicker) {
+        CoordPickerDialog(
+            initialLat = coords.first,
+            initialLon = coords.second,
+            onDismiss = { showCoordPicker = false },
+            onConfirm = { la, lo ->
+                viewModel.setCustomCoords(spot.id, la, lo)
+                showCoordPicker = false
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -152,10 +168,10 @@ fun SpotDetailScreen(
             ) {
                 if (rating != null) {
                     ExpandableSectionCard(
-                        title = "Häufigkeit & Wahrscheinlichkeit (${season.labelDe})",
+                        title = "Wahrscheinlichkeit in der ${season.labelDe}-Saison",
                         expandedByDefault = true
                     ) {
-                        RatingBars(frequency = rating.frequency, probability = rating.probability)
+                        RatingBars(probability = rating.probability)
                     }
                 }
 
@@ -218,10 +234,25 @@ fun SpotDetailScreen(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    if (spot.parking.distanceToSpot.isNotBlank()) {
+                        Text(
+                            "Entfernung Parkplatz → Ziel: ${spot.parking.distanceToSpot}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
                 }
 
                 ExpandableSectionCard(title = "Koordinaten & Route", icon = Icons.Filled.LocationOn) {
-                    Text("${spot.lat}, ${spot.lon}", style = MaterialTheme.typography.bodyMedium)
+                    Text("${coords.first}, ${coords.second}", style = MaterialTheme.typography.bodyMedium)
+                    if (customCoords.containsKey(spot.id)) {
+                        Text(
+                            "Angepasste Position (Original: ${spot.lat}, ${spot.lon})",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                     if (spot.what3words != null) {
                         Text(
                             "what3words: ${spot.what3words}",
@@ -230,11 +261,18 @@ fun SpotDetailScreen(
                             modifier = Modifier.padding(top = 4.dp)
                         )
                     }
-                    OutlinedButton(
-                        onClick = { GeoUtils.openNavigation(context, spot.lat, spot.lon, spot.name) },
-                        modifier = Modifier.padding(top = 8.dp)
-                    ) {
-                        Text("Route in Google Maps planen")
+                    Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = { GeoUtils.openNavigation(context, coords.first, coords.second, spot.name) }) {
+                            Text("Route planen")
+                        }
+                        OutlinedButton(onClick = { showCoordPicker = true }) {
+                            Text("Anpassen")
+                        }
+                        if (customCoords.containsKey(spot.id)) {
+                            OutlinedButton(onClick = { viewModel.resetCustomCoords(spot.id) }) {
+                                Text("Zurücksetzen")
+                            }
+                        }
                     }
                 }
 
