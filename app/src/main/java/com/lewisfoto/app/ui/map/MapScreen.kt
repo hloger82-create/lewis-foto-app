@@ -20,12 +20,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -135,11 +134,11 @@ fun MapScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.height(46.dp),
+                modifier = Modifier.height(56.dp),
                 title = {
                     Text(
                         if (activeFilter != null) "Karte · ${activeFilter!!.labelDe}" else "Fotospots-Karte",
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -147,7 +146,7 @@ fun MapScreen(
                 navigationIcon = {
                     if (motif != null) {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
+                            Icon(androidx.compose.material.icons.Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
                         }
                     }
                 },
@@ -164,34 +163,37 @@ fun MapScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 12.dp, vertical = 6.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                FilterChip(
-                    selected = activeFilter == null,
-                    onClick = { activeFilter = null },
-                    label = { Text("Alle", maxLines = 1) }
-                )
-                viewModel.motifs.forEach { m ->
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     FilterChip(
-                        selected = activeFilter == m,
-                        onClick = { activeFilter = if (activeFilter == m) null else m },
-                        label = { Text(m.labelDe, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                        leadingIcon = {
-                            Box(
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .background(Color(m.colorHex))
-                                    .padding(5.dp)
-                            ) {}
-                        }
+                        selected = activeFilter == null,
+                        onClick = { activeFilter = null },
+                        label = { Text("Alle", maxLines = 1) }
                     )
+                    viewModel.motifs.forEach { m ->
+                        FilterChip(
+                            selected = activeFilter == m,
+                            onClick = { activeFilter = if (activeFilter == m) null else m },
+                            label = { Text(m.labelDe, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                            leadingIcon = {
+                                Box(
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .background(Color(m.colorHex))
+                                        .padding(5.dp)
+                                ) {}
+                            }
+                        )
+                    }
                 }
+                HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant)
             }
 
             Box(
