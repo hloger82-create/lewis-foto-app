@@ -21,7 +21,7 @@ import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.SafetyDivider
-import androidx.compose.material.icons.filled.Tide
+import androidx.compose.material.icons.filled.Waves
 import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -148,7 +148,7 @@ fun SpotDetailScreen(
                 }
 
                 if (spot.tide != null) {
-                    SectionCard(title = "Gezeiten", icon = Icons.Filled.Tide) {
+git                    SectionCard(title = "Gezeiten", icon = Icons.Filled.Waves) {
                         Text(
                             text = if (spot.tide!!.bestAroundLowTide) "Um Niedrigwasser (Ebbe)" else "Um Hochwasser (Flut)",
                             style = MaterialTheme.typography.bodyMedium,
