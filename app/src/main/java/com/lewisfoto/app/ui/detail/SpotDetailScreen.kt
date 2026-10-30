@@ -181,104 +181,108 @@ fun SpotDetailScreen(
 
                 if (spot.tide != null) {
                     ExpandableSectionCard(title = "Gezeiten", icon = Icons.Filled.Waves) {
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(
+                                text = if (spot.tide!!.bestAroundLowTide) "Um Niedrigwasser (Ebbe)" else "Um Hochwasser (Flut)",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                spot.tide!!.note,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+
+                ExpandableSectionCard(title = "Tipps zur Location", icon = Icons.Filled.TipsAndUpdates) {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        spot.tips.forEach { tip ->
+                            Text(text = "• $tip", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                }
+
+                ExpandableSectionCard(title = "Sicherheit & Ethik", icon = Icons.Filled.SafetyDivider) {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        spot.safety.forEach { item ->
+                            Text(text = "• $item", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                }
+
+                ExpandableSectionCard(title = "Anfahrt", icon = Icons.Filled.Place) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
-                            text = if (spot.tide!!.bestAroundLowTide) "Um Niedrigwasser (Ebbe)" else "Um Hochwasser (Flut)",
+                            spot.arrival.fromStornoway,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            spot.tide!!.note,
+                            spot.arrival.description,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
 
-                ExpandableSectionCard(title = "Tipps zur Location", icon = Icons.Filled.TipsAndUpdates) {
-                    spot.tips.forEach { tip ->
-                        Text(
-                            text = "• $tip",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(bottom = 6.dp)
-                        )
-                    }
-                }
-
-                ExpandableSectionCard(title = "Sicherheit & Ethik", icon = Icons.Filled.SafetyDivider) {
-                    spot.safety.forEach { s ->
-                        Text(
-                            text = "• $s",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(bottom = 6.dp)
-                        )
-                    }
-                }
-
-                ExpandableSectionCard(title = "Anfahrt", icon = Icons.Filled.Place) {
-                    Text(
-                        spot.arrival.fromStornoway,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        spot.arrival.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
                 ExpandableSectionCard(title = "Parkmöglichkeit", icon = Icons.Filled.DirectionsCar) {
-                    Text(spot.parking.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
-                    Text(
-                        spot.parking.note,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    if (spot.parking.distanceToSpot.isNotBlank()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(spot.parking.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                         Text(
-                            "Entfernung Parkplatz → Ziel: ${spot.parking.distanceToSpot}",
+                            spot.parking.note,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(top = 4.dp)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                        if (spot.parking.distanceToSpot.isNotBlank()) {
+                            Text(
+                                "Entfernung Parkplatz → Ziel: ${spot.parking.distanceToSpot}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
 
                 ExpandableSectionCard(title = "Koordinaten & Route", icon = Icons.Filled.LocationOn) {
-                    Text("${coords.first}, ${coords.second}", style = MaterialTheme.typography.bodyMedium)
-                    if (customCoords.containsKey(spot.id)) {
-                        Text(
-                            "Angepasste Position (Original: ${spot.lat}, ${spot.lon})",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    if (spot.what3words != null) {
-                        Text(
-                            "what3words: ${spot.what3words}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(top = 4.dp)
-                        )
-                    }
-                    Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedButton(onClick = { GeoUtils.openNavigation(context, coords.first, coords.second, spot.name) }) {
-                            Text("Route planen")
-                        }
-                        OutlinedButton(onClick = { showCoordPicker = true }) {
-                            Text("Anpassen")
-                        }
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text("${coords.first}, ${coords.second}", style = MaterialTheme.typography.bodyMedium)
                         if (customCoords.containsKey(spot.id)) {
-                            OutlinedButton(onClick = { viewModel.resetCustomCoords(spot.id) }) {
-                                Text("Zurücksetzen")
+                            Text(
+                                "Angepasste Position (Original: ${spot.lat}, ${spot.lon})",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        if (spot.what3words != null) {
+                            Text(
+                                "what3words: ${spot.what3words}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            OutlinedButton(onClick = { GeoUtils.openNavigation(context, coords.first, coords.second, spot.name) }) {
+                                Text("Route planen")
+                            }
+                            OutlinedButton(onClick = { showCoordPicker = true }) {
+                                Text("Anpassen")
+                            }
+                            if (customCoords.containsKey(spot.id)) {
+                                OutlinedButton(onClick = { viewModel.resetCustomCoords(spot.id) }) {
+                                    Text("Zurücksetzen")
+                                }
                             }
                         }
                     }
                 }
 
                 ExpandableSectionCard(title = "Datenquellen") {
-                    spot.sources.forEach { source ->
-                        Text("• $source", style = MaterialTheme.typography.bodySmall)
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        spot.sources.forEach { source ->
+                            Text("• $source", style = MaterialTheme.typography.bodySmall)
+                        }
                     }
                 }
             }
