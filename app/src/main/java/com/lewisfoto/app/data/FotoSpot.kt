@@ -8,7 +8,8 @@ data class ParkingInfo(
 
 data class TideInfo(
     val bestAroundLowTide: Boolean,
-    val note: String
+    val note: String,
+    val relevant: Boolean = true
 )
 
 data class Rating(
