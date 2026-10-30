@@ -78,16 +78,19 @@ object WeatherService {
             }
         }
 
-    suspend fun rainViewerLatestFrame(): Result<Pair<String, String>> = withContext(Dispatchers.IO) {
+    suspend fun rainViewerFrames(): Result<Pair<String, List<String>>> = withContext(Dispatchers.IO) {
         runCatching {
             val conn = URL("https://api.rainviewer.com/public/weather-maps.json").openConnection() as HttpURLConnection
             conn.connectTimeout = 8000
             conn.readTimeout = 8000
             val json = JSONObject(conn.inputStream.bufferedReader().readText())
             val host = json.getString("host")
-            val frames: JSONArray = json.getJSONObject("radar").getJSONArray("past")
-            val last = frames.getJSONObject(frames.length() - 1)
-            host to last.getString("path")
+            val radar = json.getJSONObject("radar")
+            val past: JSONArray = radar.getJSONArray("past")
+            val nowcast: JSONArray = radar.optJSONArray("nowcast") ?: JSONArray()
+            val paths = (0 until past.length()).map { past.getJSONObject(it).getString("path") } +
+                (0 until nowcast.length()).map { nowcast.getJSONObject(it).getString("path") }
+            host to paths.takeLast(12)
         }
     }
 }
