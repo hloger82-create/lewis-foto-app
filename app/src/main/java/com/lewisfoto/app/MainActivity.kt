@@ -3,13 +3,9 @@ package com.lewisfoto.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Explore
@@ -56,7 +52,8 @@ class MainActivity : ComponentActivity() {
             osmdroidBasePath = File(cacheDir, "osmdroid")
             osmdroidTileCache = File(cacheDir, "osmdroid/tiles")
         }
-        enableEdgeToEdge()
+        // Edge-to-Edge deaktiviert: im 3-Button-Modus (Quadrat/Kreis/Dreieck) wird die
+        // System-Navigationsleiste sonst ueberlagert und die App-NavBar abgeschnitten.
         setContent {
             val viewModel: AppViewModel = viewModel()
             val darkMode by viewModel.darkMode.collectAsStateWithLifecycle()
@@ -88,12 +85,8 @@ fun LewisFotoNav(viewModel: AppViewModel) {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        contentWindowInsets = WindowInsets.safeDrawing,
         bottomBar = {
-            NavigationBar(
-                modifier = Modifier.height(64.dp),
-                windowInsets = WindowInsets.navigationBars
-            ) {
+            NavigationBar(modifier = Modifier.height(64.dp)) {
                 destinations.forEach { dest ->
                     NavigationBarItem(
                         selected = currentRoute == dest.route,
