@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="sea_deep">#0B3D4A</color>
+    <color name="sea_mid">#14657A</color>
+    <color name="sea_light">#2E8CA3</color>
+    <color name="sand">#E8DCC3</color>
+    <color name="sand_dark">#C9B98F</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="ink">#1E2A2E</color>
+</resources>
