@@ -46,10 +46,9 @@ fun MotifDot(motif: Motif, size: Int = 12) {
 }
 
 @Composable
-fun RatingBars(frequency: Int, probability: Int, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        RatingBar(label = "Häufigkeit", value = frequency)
-        RatingBar(label = "Wahrscheinlichkeit", value = probability)
+fun RatingBars(probability: Int, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        RatingBar(label = "Wahrscheinlichkeit (Sichtung in der Saison)", value = probability)
     }
 }
 
@@ -66,7 +65,7 @@ private fun RatingBar(label: String, value: Int) {
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "$value / 10",
+                text = "$value %",
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
@@ -81,7 +80,7 @@ private fun RatingBar(label: String, value: Int) {
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(value / 10f)
+                    .fillMaxWidth(value / 100f)
                     .height(8.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary)
