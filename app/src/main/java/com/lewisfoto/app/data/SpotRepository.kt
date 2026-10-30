@@ -507,7 +507,6 @@ object SpotRepository {
             ),
             safety = listOf("Nicht ins Glen abseits der Wege laufen – Adlerhorste sind geschützt."),
             parking = p("Parkplatz Bogha Glas (A859)", "Parkplatz direkt an der A859, gebührenfrei", "direkt an der A859 beobachtbar"),
-            arrivalRemoved = false,
             sources = listOf("Visit Outer Hebrides – Golden Eagles & Bird of Prey Trail")
         ),
         FotoSpot(
