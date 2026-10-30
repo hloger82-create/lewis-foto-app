@@ -20,6 +20,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CloudQueue
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +30,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +38,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,11 +62,15 @@ import com.lewisfoto.app.data.FotoSpot
 import com.lewisfoto.app.data.Motif
 import com.lewisfoto.app.ui.components.MotifDot
 import com.lewisfoto.app.ui.components.ProbabilityBadge
+import com.lewisfoto.app.util.WeatherService
 import com.lewisfoto.app.viewmodel.AppViewModel
+import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.util.MapTileIndex
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.TilesOverlay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,6 +85,14 @@ fun MapScreen(
     val tripSeason by viewModel.season.collectAsStateWithLifecycle()
     val customCoords by viewModel.customCoords.collectAsStateWithLifecycle()
     var activeFilter by remember { mutableStateOf(motif) }
+    var radarOn by remember { mutableStateOf(false) }
+    var radarTimestamp by remember { mutableStateOf<Long?>(null) }
+
+    LaunchedEffect(radarOn) {
+        if (radarOn && radarTimestamp == null) {
+            WeatherService.rainViewerLatestTimestamp().onSuccess { radarTimestamp = it }
+        }
+    }
 
     val allSpots = remember { viewModel.motifs.flatMap { viewModel.spotsForMotif(it) } }
     val visibleSpots = remember(activeFilter) {
@@ -107,6 +124,27 @@ fun MapScreen(
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    DisposableEffect(radarOn, radarTimestamp) {
+        if (radarOn && radarTimestamp != null) {
+            val ts = radarTimestamp!!
+            val tileSource = object : OnlineTileSourceBase(
+                "RainViewer", 0, 18, 256, ".png",
+                arrayOf("https://tilecache.rainviewer.com/v4/composite")
+            ) {
+                override fun getTileURLString(pMapTileIndex: Long): String =
+                    "https://tilecache.rainviewer.com/v4/composite/$ts/256/${MapTileIndex.getZoom(pMapTileIndex)}/${MapTileIndex.getX(pMapTileIndex)}/${MapTileIndex.getY(pMapTileIndex)}.png"
+            }
+            val overlay = TilesOverlay(tileSource, context).apply {
+                isEnabled = true
+                opacity = 0.6
+            }
+            mapView.overlayManager.add(overlay)
+            onDispose { mapView.overlayManager.remove(overlay) }
+        } else {
+            onDispose { }
+        }
     }
 
     DisposableEffect(visibleSpots, customCoords) {
@@ -143,17 +181,27 @@ fun MapScreen(
                         overflow = TextOverflow.Ellipsis
                     )
                 },
+                actions = {
+                    IconToggleButton(checked = radarOn, onCheckedChange = { radarOn = it }) {
+                        Icon(
+                            Icons.Filled.CloudQueue,
+                            contentDescription = "Niederschlagsradar",
+                            tint = if (radarOn) Color.White else Color.White.copy(alpha = 0.6f)
+                        )
+                    }
+                },
                 navigationIcon = {
                     if (motif != null) {
                         IconButton(onClick = onBack) {
-                            Icon(androidx.compose.material.icons.Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
                         }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White
                 )
             )
         }
