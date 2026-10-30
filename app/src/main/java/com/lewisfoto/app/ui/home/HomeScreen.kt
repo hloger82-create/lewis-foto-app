@@ -195,7 +195,7 @@ private fun MotifTile(motif: Motif, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(2.2f)
+            .aspectRatio(3.0f)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color(motif.colorHex)),
