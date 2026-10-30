@@ -18,12 +18,13 @@ object SpotRepository {
         "Grinneabhat (Bragar) – Birdwatching West-Lewis" to "https://www.grinneabhat.com",
         "Western Isles Wildlife – Vogelarten & Status" to "https://western-isles-wildlife.co.uk",
         "OpenStreetMap – Kartenmaterial & Parkplätze (ODbL)" to "https://www.openstreetmap.org",
-        "Wikidata / Wikipedia / British Listed Buildings – verifizierte Koordinaten" to "https://www.wikidata.org"
+        "Wikidata / Wikipedia / British Listed Buildings – verifizierte Koordinaten" to "https://www.wikidata.org",
+        "Open-Meteo – Wettervorhersage (CC BY 4.0)" to "https://open-meteo.com",
+        "RainViewer – Niederschlagsradar" to "https://www.rainviewer.com"
     )
 
     private fun r(season: Season, probability: Int) = Rating(season, probability)
     private fun p(name: String, note: String, dist: String = "") = ParkingInfo(name, note, dist)
-    private fun a(from: String, desc: String) = ArrivalInfo(from, desc)
     private fun t(low: Boolean, note: String) = TideInfo(low, note)
 
     val allSpots: List<FotoSpot> = listOf(
@@ -42,7 +43,6 @@ object SpotRepository {
             ),
             safety = listOf("Einschusslöcher/Schlamm am Ufer: rutschig – festes Schuhwerk."),
             parking = p("Parkplatz Huisinis Beach", "Kleiner Parkplatz an der B887, gebührenfrei", "ca. 300 m Fußweg zum Ufer"),
-            arrival = a("ca. 45 Min. / 40 km ab Tarbert", "B887 Single-Track-Road ab Tarbert, Passing Places beachten"),
             sources = listOf("Visit Outer Hebrides", "Seatrek / HWDT")
         ),
         FotoSpot(
@@ -60,7 +60,6 @@ object SpotRepository {
             ),
             safety = listOf("Ebbe beachten: Rückkehrweg vor Flut sichern, Watt kann schnell zufluten."),
             parking = p("Parkplatz Uig Sands (Ardroil)", "Parkplatz am Ende der Single-Track-Road, gebührenfrei; what3words ///await.denser.bagpipes", "ca. 200 m Fußweg über die Dünen zum Strand"),
-            arrival = a("ca. 55 Min. / 45 km ab Stornoway", "A866 Richtung Barvas, dann Single-Track nach Uig"),
             sources = listOf("Tripadvisor-Reviews Uig Sands", "Seatrek", "WildBounds", "scotlandlessexplored.com (what3words)")
         ),
         FotoSpot(
@@ -77,7 +76,6 @@ object SpotRepository {
             ),
             safety = listOf("Single-Track-Roads im Pairc: Ausweichstellen nutzen, langsam fahren."),
             parking = p("Parkbucht an der Nebenstraße zum Loch Seaforth", "Unbefestigte Ausweichbucht, gebührenfrei", "ca. 500 m Fußweg zum Ufer"),
-            arrival = a("ca. 35 Min. / 30 km ab Stornoway", "A866 Richtung Tarbert, Abzweig auf Nebenstraße Richtung Loch Seaforth"),
             sources = listOf("Visit Outer Hebrides – Bird of Prey Trail")
         ),
         FotoSpot(
@@ -94,7 +92,6 @@ object SpotRepository {
             ),
             safety = listOf("Klippen und nasse Felsen: Trittsicherheit beachten."),
             parking = p("Parkplatz Garry Beach", "Parkplatz am Strand, gebührenfrei", "direkt am Strand"),
-            arrival = a("ca. 20 Min. / 15 km ab Stornoway", "A857 Richtung Tolsta/Port of Ness"),
             sources = listOf("Visit Outer Hebrides", "WildBounds")
         ),
         FotoSpot(
@@ -111,7 +108,6 @@ object SpotRepository {
             ),
             safety = listOf("Nie an Robben-Welpen annähern – Muttertiere verteidigen sie aggressiv."),
             parking = p("Parkplatz Fährhafen Leverburgh", "Großer Hafenparkplatz, gebührenfrei (Fähre gebührenpflichtig)", "Fähre, von Bord fotografieren"),
-            arrival = a("ca. 40 Min. / 35 km ab Tarbert", "A859 Richtung Leverburgh, dann CalMac-Fähre nach Berneray"),
             sources = listOf("Visit Outer Hebrides – Grey Seal Sound of Harris", "HWDT", "ports.marinelink.com (Koordinaten Leverburgh)")
         ),
         FotoSpot(
@@ -128,7 +124,6 @@ object SpotRepository {
             ),
             safety = listOf("Hunde an der Leine – Robben können beunruhigt werden."),
             parking = p("Parkplatz Luskentyre Beach", "Großer Schotterparkplatz am Ende der Single-Track-Road, gebührenfrei", "direkt am Strand"),
-            arrival = a("ca. 30 Min. / 25 km ab Tarbert", "A859 Richtung Leverburgh, Abzweig nach Luskentyre/Horgabost"),
             sources = listOf("VisitScotland", "Bluefin SUP – Seal Spotting UK")
         ),
         FotoSpot(
@@ -145,7 +140,6 @@ object SpotRepository {
             ),
             safety = listOf("Hafenbereich: nicht auf Kais klettern."),
             parking = p("Parkplatz Hafen Stornoway", "Öffentlicher Hafenparkplatz, gebührenpflichtig tagsüber", "direkt am Kai"),
-            arrival = a("im Zentrum Stornoway", "Fußläufig oder kurze Fahrt ab Hafen"),
             sources = listOf("Scotsman – beste Seal-Spots Schottlands", "Virtual Hebrides", "latlong.net (Koordinaten Stornoway 58.209435, -6.384869)")
         ),
         FotoSpot(
@@ -162,7 +156,6 @@ object SpotRepository {
             ),
             safety = listOf("Felsiger Point: Trittsicherheit, nicht bei Sturm hinausgehen."),
             parking = p("Parkplatz an der Straße nach Aird a' Mhuile", "Kleine Parkbucht, gebührenfrei", "ca. 400 m Fußweg zum Point"),
-            arrival = a("ca. 40 Min. / 35 km ab Stornoway", "A866 Richtung Barvas, Abzweig Richtung Bragar/Aird a' Mhuile"),
             sources = listOf("Virtual Hebrides", "Visit Outer Hebrides")
         ),
         FotoSpot(
@@ -179,7 +172,6 @@ object SpotRepository {
             ),
             safety = listOf("Machair nicht mit dem Auto befahren – empfindliches Grasland."),
             parking = p("Parkplatz Northton Beach", "Parkplatz am Strand, gebührenfrei", "direkt am Strand"),
-            arrival = a("ca. 35 Min. / 30 km ab Tarbert", "A859 Richtung Leverburgh, Abzweig nach Northton"),
             sources = listOf("Western Isles Wildlife", "Visit Outer Hebrides – Birdwatching")
         ),
         FotoSpot(
@@ -196,7 +188,6 @@ object SpotRepository {
             ),
             safety = listOf("Salzwiesen nicht betreten – Brut- und Rastgebiet."),
             parking = p("Parkplatz am Gress Beach / Tong", "Parkplatz an der Küstenstraße, gebührenfrei", "ca. 200 m Fußweg zu den Salzwiesen"),
-            arrival = a("ca. 15 Min. / 12 km ab Stornoway", "A857 Richtung Tong/Gress, Küstenstraße entlang"),
             sources = listOf("Grinneabhat", "Western Isles Wildlife")
         ),
         FotoSpot(
@@ -213,7 +204,6 @@ object SpotRepository {
             ),
             safety = listOf("Uferweg kann schlammig sein."),
             parking = p("Parkplatz Loch Ordais (Bragar)", "Parkplatz am See, gebührenfrei", "direkt am Seeufer"),
-            arrival = a("ca. 40 Min. / 35 km ab Stornoway", "A866 Richtung Barvas/Bragar"),
             sources = listOf("Grinneabhat – Birdwatching", "Western Isles Wildlife")
         ),
         FotoSpot(
@@ -230,7 +220,6 @@ object SpotRepository {
             ),
             safety = listOf("Brunftzeit: niemals zwischen Hirsch und Hindernis stellen, Abstand > 50 m."),
             parking = p("Parkbucht am Clisham-Pass (A859)", "Ausweichbucht an der A859, gebührenfrei", "direkt an der Straße (A859)"),
-            arrival = a("ca. 20 Min. / 15 km ab Tarbert", "A859 Richtung Leverburgh, Passhöhe Clisham"),
             sources = listOf("Visit Outer Hebrides – Clisham Horseshoe", "WalkHighlands", "Wild Harris")
         ),
         FotoSpot(
@@ -247,7 +236,6 @@ object SpotRepository {
             ),
             safety = listOf("Abseits der Straße: Moorboden weich, Trittsicherheit."),
             parking = p("Parkplatz Bogha Glas (A859)", "Parkplatz an der A859, gebührenfrei", "ca. 1 km Fußweg ins Glen"),
-            arrival = a("ca. 12 Min. / 10 km ab Tarbert", "A859 Richtung Leverburgh, Parkplatz Bogha Glas"),
             sources = listOf("Visit Outer Hebrides", "WalkHighlands", "Wild Harris")
         ),
         FotoSpot(
@@ -264,7 +252,6 @@ object SpotRepository {
             ),
             safety = listOf("Moorland: Wetter kann schnell umschlagen – Karte/Kompass mitnehmen."),
             parking = p("Parkplatz Uig Sands", "Gemeinsam mit Otter-Spot Ardroil", "ca. 1,5 km Fußweg in die Hügel"),
-            arrival = a("ca. 55 Min. / 45 km ab Stornoway", "Wie Uig Sands (Ardroil)"),
             sources = listOf("Komoot – South Lewis Naturdenkmäler")
         ),
         FotoSpot(
@@ -281,7 +268,6 @@ object SpotRepository {
             ),
             safety = listOf("Single-Track-Roads: Ausweichstellen, nie auf der Fahrbahn parken."),
             parking = p("Ausweichbucht an Pairc-Nebenstraße", "Unbefestigt, gebührenfrei", "entlang der Nebenstraße"),
-            arrival = a("ca. 30 Min. / 25 km ab Stornoway", "A866 Richtung Tarbert, dann Nebenstraßen ins Pairc-Gebiet"),
             sources = listOf("Visit Outer Hebrides", "VisitScotland")
         ),
         FotoSpot(
@@ -299,7 +285,6 @@ object SpotRepository {
             ),
             safety = listOf("Klippenrand: Abstand halten, nie allein bei Sturm hinausgehen."),
             parking = p("Parkplatz Tiumpan Head Lighthouse", "Parkplatz am Leuchtturm, gebührenfrei", "ca. 300 m Fußweg zum Leuchtturm/Klippenrand"),
-            arrival = a("ca. 15 Min. / 12 km ab Stornoway", "A857 Richtung Point, Küstenstraße bis Tiumpan Head"),
             sources = listOf("HWDT – Tales from the Trail Tiumpanhead", "Visit Outer Hebrides", "BirdForum", "britishlistedbuildings.co.uk (58.261, -6.1388)")
         ),
         FotoSpot(
@@ -316,7 +301,6 @@ object SpotRepository {
             ),
             safety = listOf("Starker Westwind häufig – warme Kleidung, Klippenrand meiden."),
             parking = p("Parkplatz Butt of Lewis", "Großer Schotterparkplatz am Leuchtturm, gebührenfrei", "ca. 200 m Fußweg zum Leuchtturm"),
-            arrival = a("ca. 35 Min. / 30 km ab Stornoway", "A857 bis Tolsta, weiter Richtung Ness/Butt of Lewis"),
             sources = listOf("HWDT", "Islandeering – beste Wal-Spots UK", "Wikidata Q13630879 (58.5149, -6.2628)")
         ),
         FotoSpot(
@@ -330,7 +314,6 @@ object SpotRepository {
             tips = listOf("Seawatching vom Headland: Schweinswale, Delfine offshore."),
             safety = listOf("Felsige Küste: Trittsicherheit."),
             parking = p("Parkplatz Tolsta/Garry Beach", "Gemeinsam mit Garry Beach", "ca. 300 m Fußweg zum Headland"),
-            arrival = a("ca. 20 Min. / 15 km ab Stornoway", "A857 Richtung Tolsta"),
             sources = listOf("HWDT", "Visit Outer Hebrides")
         ),
         FotoSpot(
@@ -344,7 +327,6 @@ object SpotRepository {
             tips = listOf("Westliches Headland: Schweinswale und Delfine im Atlantik vor der Küste."),
             safety = listOf("Exponierte Westspitze: Sturm meiden."),
             parking = p("Parkplatz Gallan Head", "Parkbucht am Ende der Straße, gebührenfrei", "ca. 400 m Fußweg zur Westspitze"),
-            arrival = a("ca. 60 Min. / 50 km ab Stornoway", "A866 Richtung Barvas, Single-Track nach Uig/Gallan Head"),
             sources = listOf("HWDT", "WalkHighlands", "birdguides.com (58.24008, -7.02731)")
         ),
         FotoSpot(
@@ -362,7 +344,6 @@ object SpotRepository {
             ),
             safety = listOf("Weg durch enges Tal: bei Starkregen Wasserstand im Bach beachten."),
             parking = p("Parkplatz Eagle Observatory (Glen Mhiabhaig)", "Parkplatz an der B887, OS-Grid NB 101 063, gebührenfrei", "ca. 2 km Fußweg (30 Min.) zum Observatorium"),
-            arrival = a("ca. 40 Min. / 35 km ab Tarbert", "B887 ab Tarbert Richtung Huisinis, Abzweig Glen Mhiabhaig"),
             sources = listOf("WalkHighlands – Harris Eagle Observatory", "myhighlands.de", "visitouterhebrides.co.uk (NB 101 063)")
         ),
         FotoSpot(
@@ -379,7 +360,6 @@ object SpotRepository {
             ),
             safety = listOf("Nicht ins Glen abseits der Wege laufen – Adlerhorste sind geschützt."),
             parking = p("Parkplatz Bogha Glas (A859)", "Parkplatz direkt an der A859, gebührenfrei", "direkt an der A859 beobachtbar"),
-            arrival = a("ca. 12 Min. / 10 km ab Tarbert", "A859 ab Tarbert Richtung Leverburgh"),
             sources = listOf("Visit Outer Hebrides – Golden Eagles & Bird of Prey Trail")
         ),
         FotoSpot(
@@ -393,7 +373,6 @@ object SpotRepository {
             tips = listOf("Steinadler brüten in den Uig Hills, Seeadler über den Meeresklippen."),
             safety = listOf("Moorwanderung: Wetter kann umschlagen – Kompass/Karte dabei."),
             parking = p("Parkplatz Mangersta Bay", "Parkbucht am Strand, gebührenfrei", "ca. 1 km Fußweg"),
-            arrival = a("ca. 60 Min. / 50 km ab Stornoway", "A866 Richtung Barvas, Single-Track nach Uig/Mangersta"),
             sources = listOf("Komoot", "Western Isles Wildlife")
         ),
         FotoSpot(
@@ -407,7 +386,6 @@ object SpotRepository {
             tips = listOf("Seeadler-Starkburg entlang des Loch Seaforth (Bird-of-Prey-Trail)."),
             safety = listOf("Nebenstraße eng – Ausweichstellen nutzen."),
             parking = p("Parkbucht Loch Seaforth", "Unbefestigte Bucht, gebührenfrei", "ca. 300 m Fußweg zum Ufer"),
-            arrival = a("ca. 35 Min. / 30 km ab Stornoway", "A866 Richtung Tarbert, Abzweig zum Loch Seaforth"),
             sources = listOf("Visit Outer Hebrides – Bird of Prey Trail")
         ),
         FotoSpot(
@@ -421,7 +399,6 @@ object SpotRepository {
             tips = listOf("Seeadler besuchen regelmäßig den langen Meeresarm Loch Erisort."),
             safety = listOf("Ebbe/Flut beachten bei Uferwanderung."),
             parking = p("Parkplatz am Kopf des Loch Erisort (Balallan)", "Kleine Parkbucht, gebührenfrei", "ca. 200 m Fußweg zum Ufer"),
-            arrival = a("ca. 25 Min. / 20 km ab Stornoway", "A866 Richtung Tarbert, Abzweig Richtung Loch Erisort"),
             sources = listOf("Visit Outer Hebrides", "Western Isles Wildlife")
         ),
         FotoSpot(
@@ -438,7 +415,6 @@ object SpotRepository {
             ),
             safety = listOf("Berggelände: Trittsicherheit, Wetter beachten."),
             parking = p("Parkbucht am Clisham-Pass (A859)", "Ausweichbucht, gebührenfrei", "ca. 500 m Fußweg zu den Hängen"),
-            arrival = a("ca. 20 Min. / 15 km ab Tarbert", "A859 Richtung Leverburgh"),
             sources = listOf("Visit Outer Hebrides – Mountain Hare An Cliseam/Toddun")
         ),
         FotoSpot(
@@ -455,7 +431,6 @@ object SpotRepository {
             ),
             safety = listOf("Am Ufer bleiben, Vögel nicht aufscheuchen."),
             parking = p("Parkplatz Gress/Tong Beach", "Gebührenfrei", "direkt am Ufer"),
-            arrival = a("ca. 15 Min. / 12 km ab Stornoway", "A857 Richtung Tong/Gress"),
             sources = listOf("Grinneabhat", "Western Isles Wildlife")
         ),
         FotoSpot(
@@ -469,7 +444,6 @@ object SpotRepository {
             tips = listOf("Tordalken (Tysties) leben ganzjährig im Hafen – leicht zu fotografieren."),
             safety = listOf("Hafenbereich: Kai-Kanten meiden."),
             parking = p("Parkplatz Hafen Stornoway", "Gebührenpflichtig tagsüber", "direkt am Kai"),
-            arrival = a("im Zentrum Stornoway", "Fußläufig"),
             sources = listOf("Western Isles Wildlife", "RSPB")
         ),
         FotoSpot(
@@ -486,7 +460,6 @@ object SpotRepository {
             ),
             safety = listOf("Klippenrand meiden, besonders bei Wind."),
             parking = p("Parkplatz Butt of Lewis", "Großer Schotterparkplatz am Leuchtturm, gebührenfrei", "ca. 200 m Fußweg zum Leuchtturm"),
-            arrival = a("ca. 35 Min. / 30 km ab Stornoway", "A857 bis Tolsta, weiter Richtung Butt of Lewis"),
             sources = listOf("VisitScotland", "WalkHighlands", "Wikidata Q13630879 (58.5149, -6.2628)")
         ),
         FotoSpot(
@@ -500,7 +473,6 @@ object SpotRepository {
             tips = listOf("Jungsteinzeitlicher Steinkreis, überraschend wenig besucht."),
             safety = listOf("Steine nicht besteigen – geschütztes Denkmal."),
             parking = p("Parkplatz Callanish Stones", "Parkplatz am Besucherzentrum, gebührenfrei", "ca. 300 m Fußweg zu den Steinen"),
-            arrival = a("ca. 30 Min. / 25 km ab Stornoway", "A858 Richtung Barvas/Harris, Abzweig Callanish"),
             sources = listOf("Historic Environment Scotland", "VisitScotland", "Wikipedia/OS-Grid NB213330 (58.1975, -6.7450)")
         ),
         FotoSpot(
@@ -517,13 +489,12 @@ object SpotRepository {
             ),
             safety = listOf("Ebbe/Flut beachten – langer Rückweg über Watt möglich."),
             parking = p("Parkplatz Luskentyre Beach", "Großer Parkplatz am Ende der Single-Track-Road, gebührenfrei", "direkt am Strand"),
-            arrival = a("ca. 30 Min. / 25 km ab Tarbert", "A859 Richtung Leverburgh, Abzweig Luskentyre"),
             sources = listOf("VisitScotland", "OpenStreetMap")
         ),
         FotoSpot(
             id = "scarista_beach",
             name = "Scarista Beach (West-Tarbert, Harris)",
-            motif = Motif.BEACHES,
+            motif = Motif.LANDSCAPE,
             lat = 57.8250, lon = -7.0511,
             ratings = listOf(r(SPRING, 85), r(SUMMER, 95), r(AUTUMN, 90), r(WINTER, 80)),
             bestTimeOfDay = "Sonnenuntergang über dem Atlantik",
@@ -531,13 +502,12 @@ object SpotRepository {
             tips = listOf("Breiter Sandstrand nahe West Tarbert, beliebt bei Kitesurfern."),
             safety = listOf("Dünen nicht betreten – Erosionsschutz."),
             parking = p("Parkplatz Scarista Beach", "Parkplatz hinter dem Dünenwall, gebührenfrei", "direkt am Strand"),
-            arrival = a("ca. 10 Min. / 8 km ab Tarbert", "Küstenstraße von West Tarbert Richtung Scarista"),
             sources = listOf("VisitScotland", "WalkHighlands", "Apple Maps (57.8250188, -7.0511059)")
         ),
         FotoSpot(
             id = "ness_beach",
             name = "Ness Beach (Port Ness, Nord-Lewis)",
-            motif = Motif.BEACHES,
+            motif = Motif.LANDSCAPE,
             lat = 58.4895, lon = -6.2500,
             ratings = listOf(r(SPRING, 85), r(SUMMER, 95), r(AUTUMN, 85), r(WINTER, 70)),
             bestTimeOfDay = "Abendsonne",
@@ -545,7 +515,6 @@ object SpotRepository {
             tips = listOf("Sandstrand am Nordende von Lewis nahe dem Hafen von Ness."),
             safety = listOf("Dünen schützen – markierte Wege nutzen."),
             parking = p("Parkplatz Port Ness", "Parkplatz am Hafen/Strandzugang, gebührenfrei", "ca. 300 m Fußweg zum Strand"),
-            arrival = a("ca. 30 Min. / 25 km ab Stornoway", "A857 Richtung Tolsta/Port of Ness"),
             sources = listOf("VisitScotland", "OpenStreetMap", "latitude.to (Port of Ness 58.4892, -6.2227)")
         )
     )
