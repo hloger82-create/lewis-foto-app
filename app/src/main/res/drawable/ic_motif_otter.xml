@@ -3,7 +3,8 @@
     android:viewportWidth="48" android:viewportHeight="48">
     <path android:fillColor="#FFFFFF"
         android:pathData="M8,34 C6,30 8,26 13,25 L24,22 C30,21 36,23 39,27 L43,24 L44,29 C42,34 37,37 30,37 L14,37 C11,37 9,36 8,34 Z M12,27 C9,25 6,25 5,27 C6,29 9,29 12,27 Z"/>
-    <circle android:fillColor="#0B3D4A" android:cx="35" cy="26" r="1.5"/>
+    <path android:fillColor="#0B3D4A"
+        android:pathData="M33.5,26 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0 Z"/>
     <path android:fillColor="#FFFFFF"
         android:pathData="M28,37 L40,41 L40,44 L27,40 Z"/>
 </vector>
