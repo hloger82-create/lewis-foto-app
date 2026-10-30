@@ -76,6 +76,7 @@ fun MapScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val tripSeason by viewModel.season.collectAsStateWithLifecycle()
+    val customCoords by viewModel.customCoords.collectAsStateWithLifecycle()
     var activeFilter by remember { mutableStateOf(motif) }
 
     val allSpots = remember { viewModel.motifs.flatMap { viewModel.spotsForMotif(it) } }
@@ -110,11 +111,12 @@ fun MapScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    DisposableEffect(visibleSpots) {
+    DisposableEffect(visibleSpots, customCoords) {
         mapView.overlays.removeAll { it is Marker }
         visibleSpots.forEach { spot ->
             val marker = Marker(mapView).apply {
-                position = GeoPoint(spot.lat, spot.lon)
+                val (la, lo) = viewModel.coordsOf(spot)
+                position = GeoPoint(la, lo)
                 title = spot.name
                 val rating = spot.ratingFor(tripSeason)
                 snippet = "${spot.motif.labelDe} · ${rating?.probability ?: 0} %"
@@ -137,6 +139,7 @@ fun MapScreen(
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.height(52.dp),
                 title = {
                     Text(
                         if (activeFilter != null) "Karte · ${activeFilter!!.labelDe}" else "Fotospots-Karte",
@@ -210,8 +213,8 @@ fun MapScreen(
                 )
             } else {
                 LazyColumn(
-                    contentPadding = PaddingValues(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     items(visibleSpots, key = { it.id }) { spot ->
@@ -244,27 +247,27 @@ private fun SpotListItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            MotifDot(motif = spot.motif, size = 14)
+            MotifDot(motif = spot.motif, size = 12)
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = spot.name,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "${spot.motif.labelDe} · Parken: ${spot.parking.name}",
-                    style = MaterialTheme.typography.bodySmall,
+                    text = "${spot.motif.labelDe} · ${spot.parking.name}",
+                    style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
