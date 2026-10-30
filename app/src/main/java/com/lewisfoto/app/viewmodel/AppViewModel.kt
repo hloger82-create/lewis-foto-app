@@ -33,6 +33,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val favorites: StateFlow<Set<String>> = prefs.favorites
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
 
+    val customCoords: StateFlow<Map<String, Pair<Double, Double>>> = prefs.customCoords
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+
     val season: StateFlow<Season> = tripDate
         .map { Season.of(it) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Season.of(LocalDate.now()))
@@ -52,9 +55,18 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun selectMotif(motif: Motif?) { _selectedMotif.value = motif }
 
+    fun coordsOf(spot: FotoSpot): Pair<Double, Double> =
+        customCoords.value[spot.id] ?: (spot.lat to spot.lon)
+
     fun setTripDate(date: LocalDate) = viewModelScope.launch { prefs.setTripDate(date) }
 
     fun setDarkMode(enabled: Boolean) = viewModelScope.launch { prefs.setDarkMode(enabled) }
+
+    fun setCustomCoords(spotId: String, lat: Double, lon: Double) =
+        viewModelScope.launch { prefs.setCustomCoords(spotId, lat, lon) }
+
+    fun resetCustomCoords(spotId: String) =
+        viewModelScope.launch { prefs.resetCustomCoords(spotId) }
 
     fun toggleFavorite(spotId: String) = viewModelScope.launch { prefs.toggleFavorite(spotId) }
 }
