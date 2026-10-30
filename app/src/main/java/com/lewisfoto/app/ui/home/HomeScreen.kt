@@ -97,8 +97,8 @@ fun HomeScreen(
                     .background(
                         Brush.verticalGradient(listOf(Color(0xFF0B3D4A), Color(0xFF2E8CA3)))
                     )
-                    .padding(horizontal = 16.dp, vertical = 10.dp),
-                contentAlignment = Alignment.CenterStart
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                contentAlignment = Alignment.TopStart
             ) {
                 Column {
                     Text(
@@ -195,7 +195,7 @@ private fun MotifTile(motif: Motif, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(2.6f)
+            .aspectRatio(2.2f)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color(motif.colorHex)),
