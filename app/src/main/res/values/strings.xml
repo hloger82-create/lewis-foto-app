@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Lewis &amp; Harris Fotospots</string>
+    <string name="home_title">Natur- &amp; Wildlife-Fotografie</string>
+    <string name="home_subtitle">Lewis &amp; Harris, Äußere Hebriden</string>
+    <string name="trip_date">Reisedatum</string>
+    <string name="motif_select">Fotomotiv wählen</string>
+    <string name="map_title">Fotospots-Karte</string>
+    <string name="favorites_title">Merkliste</string>
+    <string name="settings_title">Einstellungen</string>
+    <string name="sources_title">Datenquellen</string>
+    <string name="probability">Wahrscheinlichkeit</string>
+    <string name="frequency">Häufigkeit</string>
+    <string name="tips">Tipps zur Location</string>
+    <string name="parking">Parkmöglichkeit</string>
+    <string name="arrival">Anfahrt</string>
+    <string name="distance">Entfernung</string>
+    <string name="best_time">Beste Zeit</string>
+    <string name="tide">Gezeiten</string>
+    <string name="safety">Sicherheit &amp; Ethik</string>
+    <string name="directions">Route planen</string>
+    <string name="dark_mode">Dunkelmodus</string>
+    <string name="no_spots">Keine Spots für dieses Motiv zum gewählten Datum.</string>
+    <string name="season_note">Saisonhinweise für dein Reisedatum</string>
+</resources>
