@@ -21,6 +21,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,6 +36,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.lewisfoto.app.data.Motif
+import com.lewisfoto.app.ui.SplashScreen
 import com.lewisfoto.app.ui.detail.SpotDetailScreen
 import com.lewisfoto.app.ui.favorites.FavoritesScreen
 import com.lewisfoto.app.ui.home.HomeScreen
@@ -59,8 +63,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             val viewModel: AppViewModel = viewModel()
             val darkMode by viewModel.darkMode.collectAsStateWithLifecycle()
+            var showSplash by remember { mutableStateOf(true) }
             LewisFotoTheme(darkTheme = darkMode) {
-                LewisFotoNav(viewModel)
+                if (showSplash) {
+                    SplashScreen(onDone = { showSplash = false })
+                } else {
+                    LewisFotoNav(viewModel)
+                }
             }
         }
     }
