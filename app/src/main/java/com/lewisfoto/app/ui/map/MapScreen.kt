@@ -73,7 +73,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.TilesOverlay
 
-private class RainViewerTileSource(host: String, private val path: String) : OnlineTileSourceBase(
+private class RainViewerTileSource(private val host: String, private val path: String) : OnlineTileSourceBase(
     "RainViewer", 0, 7, 256, ".png", arrayOf(host)
 ) {
     override fun getTileURLString(pMapTileIndex: Long): String {
