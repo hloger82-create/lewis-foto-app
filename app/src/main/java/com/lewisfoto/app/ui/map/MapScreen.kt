@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -119,6 +120,7 @@ fun MapScreen(
                 snippet = "${spot.motif.labelDe} · ${rating?.probability ?: 0} %"
                 icon = coloredPin(context, spot.motif)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                relatedMessageLayout = null
                 setOnMarkerClickListener { _, _ ->
                     onSpotClick(spot)
                     true
@@ -131,12 +133,18 @@ fun MapScreen(
     }
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    val mapHeight = (screenHeight * 0.55f)
+    val mapHeight = (screenHeight * 0.50f)
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (activeFilter != null) "Karte · ${activeFilter!!.labelDe}" else "Fotospots-Karte") },
+                title = {
+                    Text(
+                        if (activeFilter != null) "Karte · ${activeFilter!!.labelDe}" else "Fotospots-Karte",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 navigationIcon = {
                     if (motif != null) {
                         IconButton(onClick = onBack) {
@@ -168,13 +176,13 @@ fun MapScreen(
                 FilterChip(
                     selected = activeFilter == null,
                     onClick = { activeFilter = null },
-                    label = { Text("Alle") }
+                    label = { Text("Alle", maxLines = 1) }
                 )
                 viewModel.motifs.forEach { m ->
                     FilterChip(
                         selected = activeFilter == m,
                         onClick = { activeFilter = if (activeFilter == m) null else m },
-                        label = { Text(m.labelDe) },
+                        label = { Text(m.labelDe, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                         leadingIcon = {
                             Box(
                                 modifier = Modifier
@@ -242,7 +250,7 @@ private fun SpotListItem(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
@@ -250,14 +258,17 @@ private fun SpotListItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = spot.name,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = "${spot.motif.labelDe} · Parken: ${spot.parking.name}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
             ProbabilityBadge(spot.ratingFor(season)?.probability ?: 0)
