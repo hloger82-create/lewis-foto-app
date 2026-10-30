@@ -16,17 +16,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowDown
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.SafetyDivider
-import androidx.compose.material.icons.filled.Tide
 import androidx.compose.material.icons.filled.TipsAndUpdates
+import androidx.compose.material.icons.filled.Waves
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -158,7 +158,7 @@ fun SpotDetailScreen(
                 }
 
                 if (spot.tide != null) {
-                    ExpandableSectionCard(title = "Gezeiten", icon = Icons.Filled.Tide) {
+                    ExpandableSectionCard(title = "Gezeiten", icon = Icons.Filled.Waves) {
                         Text(
                             text = if (spot.tide!!.bestAroundLowTide) "Um Niedrigwasser (Ebbe)" else "Um Hochwasser (Flut)",
                             style = MaterialTheme.typography.bodyMedium,
@@ -279,7 +279,7 @@ private fun ExpandableSectionCard(
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
-                    imageVector = if (expanded) Icons.AutoMirrored.Filled.KeyboardArrowUp else Icons.AutoMirrored.Filled.KeyboardArrowDown,
+                    imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                     contentDescription = if (expanded) "Einklappen" else "Ausklappen",
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
