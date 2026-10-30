@@ -27,6 +27,7 @@ data class FotoSpot(
     val motif: Motif,
     val lat: Double,
     val lon: Double,
+    val what3words: String? = null,
     val ratings: List<Rating>,
     val bestTimeOfDay: String,
     val tide: TideInfo?,
