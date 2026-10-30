@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lewisfoto.app.data.Motif
@@ -60,7 +61,9 @@ private fun RatingBar(label: String, value: Int) {
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = "$value / 10",
@@ -99,12 +102,14 @@ fun ProbabilityBadge(probability: Int) {
         modifier = Modifier
             .clip(CircleShape)
             .background(color.copy(alpha = 0.15f))
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .padding(horizontal = 10.dp, vertical = 5.dp)
     ) {
         Text(
             text = "$text ($probability %)",
             color = color,
-            fontSize = 12.sp,
+            fontSize = 11.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.Bold
         )
     }
