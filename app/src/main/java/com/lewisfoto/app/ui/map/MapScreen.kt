@@ -98,11 +98,22 @@ fun MapScreen(
     val customCoords by viewModel.customCoords.collectAsStateWithLifecycle()
     var activeFilter by remember { mutableStateOf(motif) }
     var radarOn by remember { mutableStateOf(false) }
-    var radarFrame by remember { mutableStateOf<Pair<String, String>?>(null) }
+    var radarFrames by remember { mutableStateOf<Pair<String, List<String>>?>(null) }
+    var radarIndex by remember { mutableStateOf(0) }
 
     LaunchedEffect(radarOn) {
-        if (radarOn && radarFrame == null) {
-            WeatherService.rainViewerLatestFrame().onSuccess { radarFrame = it }
+        if (radarOn && radarFrames == null) {
+            WeatherService.rainViewerFrames().onSuccess { radarFrames = it }
+        }
+    }
+
+    LaunchedEffect(radarOn, radarFrames) {
+        if (radarOn && radarFrames != null) {
+            while (true) {
+                kotlinx.coroutines.delay(700)
+                val f = radarFrames!!
+                if (f.second.isNotEmpty()) radarIndex = (radarIndex + 1) % f.second.size
+            }
         }
     }
 
@@ -138,10 +149,11 @@ fun MapScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    DisposableEffect(radarOn, radarFrame) {
-        val frame = radarFrame
-        if (radarOn && frame != null) {
-            val (host, path) = frame
+    DisposableEffect(radarOn, radarIndex, radarFrames) {
+        val frames = radarFrames
+        if (radarOn && frames != null && frames.second.isNotEmpty()) {
+            val (host, paths) = frames
+            val path = paths[radarIndex % paths.size]
             val tileSource = RainViewerTileSource(host, path)
             val provider = MapTileProviderBasic(context)
             provider.setTileSource(tileSource)
@@ -192,7 +204,7 @@ fun MapScreen(
                     IconToggleButton(checked = radarOn, onCheckedChange = { radarOn = it }) {
                         Icon(
                             Icons.Filled.CloudQueue,
-                            contentDescription = "Niederschlagsradar",
+                            contentDescription = "Niederschlagsradar (animiert)",
                             tint = if (radarOn) Color.White else Color.White.copy(alpha = 0.6f)
                         )
                     }
