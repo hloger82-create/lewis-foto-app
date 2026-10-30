@@ -20,6 +20,7 @@ class AppPreferences(private val context: Context) {
         private val TRIP_DATE = longPreferencesKey("trip_date_epoch_day")
         private val DARK_MODE = booleanPreferencesKey("dark_mode")
         private val FAVORITES = stringPreferencesKey("favorite_spot_ids")
+        private val CUSTOM_COORDS = stringPreferencesKey("custom_coords")
     }
 
     val tripDate: Flow<LocalDate> = context.dataStore.data.map { prefs ->
@@ -35,12 +36,37 @@ class AppPreferences(private val context: Context) {
         (prefs[FAVORITES] ?: "").split(",").filter { it.isNotBlank() }.toSet()
     }
 
+    val customCoords: Flow<Map<String, Pair<Double, Double>>> = context.dataStore.data.map { prefs ->
+        (prefs[CUSTOM_COORDS] ?: "").split(";").filter { it.isNotBlank() }.mapNotNull { entry ->
+            val parts = entry.split("=")
+            val coordParts = parts.getOrNull(1)?.split(",") ?: return@mapNotNull null
+            val lat = coordParts.getOrNull(0)?.toDoubleOrNull() ?: return@mapNotNull null
+            val lon = coordParts.getOrNull(1)?.toDoubleOrNull() ?: return@mapNotNull null
+            parts[0] to (lat to lon)
+        }.toMap()
+    }
+
     suspend fun setTripDate(date: LocalDate) {
         context.dataStore.edit { it[TRIP_DATE] = date.toEpochDay() }
     }
 
     suspend fun setDarkMode(enabled: Boolean) {
         context.dataStore.edit { it[DARK_MODE] = enabled }
+    }
+
+    suspend fun setCustomCoords(spotId: String, lat: Double, lon: Double) {
+        context.dataStore.edit { prefs ->
+            val current = (prefs[CUSTOM_COORDS] ?: "").split(";").filter { it.isNotBlank() && !it.startsWith("$spotId=") }.toMutableList()
+            current.add("$spotId=$lat,$lon")
+            prefs[CUSTOM_COORDS] = current.joinToString(";")
+        }
+    }
+
+    suspend fun resetCustomCoords(spotId: String) {
+        context.dataStore.edit { prefs ->
+            val current = (prefs[CUSTOM_COORDS] ?: "").split(";").filter { it.isNotBlank() && !it.startsWith("$spotId=") }
+            prefs[CUSTOM_COORDS] = current.joinToString(";")
+        }
     }
 
     suspend fun toggleFavorite(spotId: String) {
