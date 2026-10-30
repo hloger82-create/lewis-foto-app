@@ -1,0 +1,256 @@
+package com.lewisfoto.app.ui.map
+
+import android.graphics.drawable.Drawable
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lewisfoto.app.data.FotoSpot
+import com.lewisfoto.app.data.Motif
+import com.lewisfoto.app.ui.components.MotifDot
+import com.lewisfoto.app.ui.components.ProbabilityBadge
+import com.lewisfoto.app.viewmodel.AppViewModel
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MapScreen(
+    viewModel: AppViewModel,
+    motif: Motif?,
+    onSpotClick: (FotoSpot) -> Unit,
+    onBack: () -> Unit
+) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val tripSeason by viewModel.season.collectAsStateWithLifecycle()
+    var activeFilter by remember { mutableStateOf(motif) }
+
+    val allSpots = remember { viewModel.motifs.flatMap { viewModel.spotsForMotif(it) } }
+    val visibleSpots = remember(activeFilter) {
+        if (activeFilter == null) allSpots else allSpots.filter { it.motif == activeFilter }
+    }
+
+    val mapView = remember {
+        MapView(context).apply {
+            layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            setTileSource(TileSourceFactory.MAPNIK)
+            setMultiTouchControls(true)
+            minZoomLevel = 7.0
+            maxZoomLevel = 18.0
+            controller.setZoom(8.5)
+            controller.setCenter(GeoPoint(57.98, -6.75))
+        }
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> mapView.onResume()
+                Lifecycle.Event.ON_PAUSE -> mapView.onPause()
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    DisposableEffect(visibleSpots) {
+        mapView.overlays.removeAll { it is Marker }
+        visibleSpots.forEach { spot ->
+            val marker = Marker(mapView).apply {
+                position = GeoPoint(spot.lat, spot.lon)
+                title = spot.name
+                val rating = spot.ratingFor(tripSeason)
+                snippet = "${spot.motif.labelDe} · ${rating?.probability ?: 0} %"
+                icon = coloredPin(context, spot.motif)
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                setOnMarkerClickListener { _, _ ->
+                    onSpotClick(spot)
+                    true
+                }
+            }
+            mapView.overlays.add(marker)
+        }
+        mapView.invalidate()
+        onDispose { mapView.overlays.removeAll { it is Marker } }
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(if (activeFilter != null) "Karte · ${activeFilter!!.labelDe}" else "Fotospots-Karte") },
+                navigationIcon = {
+                    if (motif != null) {
+                        IconButton(onClick = onBack) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
+                        }
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(
+                    selected = activeFilter == null,
+                    onClick = { activeFilter = null },
+                    label = { Text("Alle") }
+                )
+                viewModel.motifs.forEach { m ->
+                    FilterChip(
+                        selected = activeFilter == m,
+                        onClick = { activeFilter = if (activeFilter == m) null else m },
+                        label = { Text(m.labelDe) },
+                        leadingIcon = {
+                            Box(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .background(Color(m.colorHex))
+                                    .padding(5.dp)
+                            ) {}
+                        }
+                    )
+                }
+            }
+
+            Box(modifier = Modifier.weight(1f)) {
+                AndroidView(factory = { mapView }, modifier = Modifier.fillMaxSize())
+            }
+
+            if (visibleSpots.isEmpty()) {
+                Text(
+                    text = "Keine Spots für diesen Filter.",
+                    modifier = Modifier.padding(16.dp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(visibleSpots, key = { it.id }) { spot ->
+                        SpotListItem(
+                            spot = spot,
+                            season = tripSeason,
+                            onClick = { onSpotClick(spot) }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun coloredPin(context: android.content.Context, motif: Motif): Drawable? {
+    val base = ContextCompat.getDrawable(context, android.R.drawable.ic_menu_mylocation) ?: return null
+    val d = base.mutate()
+    d.setTint(Color(motif.colorHex).toArgb())
+    return d
+}
+
+@Composable
+private fun SpotListItem(
+    spot: FotoSpot,
+    season: com.lewisfoto.app.data.Season,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            MotifDot(motif = spot.motif, size = 14)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = spot.name,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "${spot.motif.labelDe} · Parken: ${spot.parking.name}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            ProbabilityBadge(spot.ratingFor(season)?.probability ?: 0)
+        }
+    }
+}
