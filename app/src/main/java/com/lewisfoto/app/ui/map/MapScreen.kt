@@ -132,8 +132,6 @@ fun MapScreen(
         onDispose { mapView.overlays.removeAll { it is Marker } }
     }
 
-    val mapHeight = 320.dp
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -199,7 +197,7 @@ fun MapScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(mapHeight)
+                    .weight(1f)
                     .clip(RoundedCornerShape(8.dp))
             ) {
                 AndroidView(factory = { mapView }, modifier = Modifier.fillMaxSize())
@@ -208,9 +206,7 @@ fun MapScreen(
             if (visibleSpots.isEmpty()) {
                 Text(
                     text = "Keine Spots für diesen Filter.",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .weight(1f),
+                    modifier = Modifier.padding(16.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
@@ -219,7 +215,7 @@ fun MapScreen(
                     verticalArrangement = Arrangement.spacedBy(6.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
+                        .weight(0.45f)
                 ) {
                     items(visibleSpots, key = { it.id }) { spot ->
                         SpotListItem(
