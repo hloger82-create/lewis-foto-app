@@ -6,11 +6,6 @@ data class ParkingInfo(
     val distanceToSpot: String = ""
 )
 
-data class ArrivalInfo(
-    val fromStornoway: String,
-    val description: String
-)
-
 data class TideInfo(
     val bestAroundLowTide: Boolean,
     val note: String
@@ -34,7 +29,6 @@ data class FotoSpot(
     val tips: List<String>,
     val safety: List<String>,
     val parking: ParkingInfo,
-    val arrival: ArrivalInfo,
     val sources: List<String>
 ) {
     fun ratingFor(season: Season): Rating? = ratings.firstOrNull { it.season == season }
