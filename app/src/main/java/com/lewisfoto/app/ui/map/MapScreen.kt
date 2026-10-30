@@ -44,7 +44,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -133,16 +132,16 @@ fun MapScreen(
         onDispose { mapView.overlays.removeAll { it is Marker } }
     }
 
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    val mapHeight = (screenHeight * 0.50f)
+    val mapHeight = 320.dp
 
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.height(52.dp),
+                modifier = Modifier.height(46.dp),
                 title = {
                     Text(
                         if (activeFilter != null) "Karte · ${activeFilter!!.labelDe}" else "Fotospots-Karte",
+                        style = MaterialTheme.typography.titleSmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -172,7 +171,7 @@ fun MapScreen(
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
                     .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 FilterChip(
@@ -201,6 +200,7 @@ fun MapScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(mapHeight)
+                    .clip(RoundedCornerShape(8.dp))
             ) {
                 AndroidView(factory = { mapView }, modifier = Modifier.fillMaxSize())
             }
@@ -208,14 +208,18 @@ fun MapScreen(
             if (visibleSpots.isEmpty()) {
                 Text(
                     text = "Keine Spots für diesen Filter.",
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .weight(1f),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
                 LazyColumn(
                     contentPadding = PaddingValues(10.dp),
                     verticalArrangement = Arrangement.spacedBy(6.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
                 ) {
                     items(visibleSpots, key = { it.id }) { spot ->
                         SpotListItem(
