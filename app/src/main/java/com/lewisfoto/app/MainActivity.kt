@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.WbCloudy
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -42,6 +42,7 @@ import com.lewisfoto.app.ui.favorites.FavoritesScreen
 import com.lewisfoto.app.ui.home.HomeScreen
 import com.lewisfoto.app.ui.map.MapScreen
 import com.lewisfoto.app.ui.settings.SettingsScreen
+import com.lewisfoto.app.ui.sightings.SightingsScreen
 import com.lewisfoto.app.ui.sources.SourcesScreen
 import com.lewisfoto.app.ui.theme.LewisFotoTheme
 import com.lewisfoto.app.ui.weather.WeatherScreen
@@ -88,6 +89,7 @@ fun LewisFotoNav(viewModel: AppViewModel) {
         BottomDestination("home", "Start", Icons.Filled.Home),
         BottomDestination("map", "Karte", Icons.Filled.Explore),
         BottomDestination("weather", "Wetter", Icons.Filled.WbCloudy),
+        BottomDestination("sightings", "Sichtungen", Icons.Filled.Visibility),
         BottomDestination("favorites", "Merkliste", Icons.Filled.Bookmarks),
         BottomDestination("sources", "Quellen", Icons.Filled.Info),
         BottomDestination("settings", "Einstellungen", Icons.Filled.Settings)
@@ -128,6 +130,9 @@ fun LewisFotoNav(viewModel: AppViewModel) {
                     viewModel = viewModel,
                     onMotifClick = { motif -> navController.navigate("map/${motif.name}") }
                 )
+            }
+            composable("sightings") {
+                SightingsScreen(viewModel = viewModel)
             }
             composable("weather") {
                 WeatherScreen(viewModel = viewModel)
