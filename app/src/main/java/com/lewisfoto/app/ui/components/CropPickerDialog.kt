@@ -25,7 +25,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyChanged
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 
@@ -66,7 +66,7 @@ fun CropPickerDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(aspect)
-                        .onGloballyChanged { boxSize = it }
+                        .onSizeChanged { boxSize = it }
                         .pointerInput(Unit) {
                             detectDragGestures { change, drag ->
                                 change.consume()
