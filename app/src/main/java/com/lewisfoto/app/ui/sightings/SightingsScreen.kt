@@ -66,7 +66,7 @@ fun SightingsScreen(viewModel: AppViewModel) {
 
     fun load() {
         if (apiKey.isBlank()) {
-            error = "Kein eBird-API-Key hinterlegt – bitte in den Einstellungen eintragen (ebird.org → Account → API Key)."
+            error = "Kein eBird-API-Key hinterlegt \u2013 bitte in den Einstellungen eintragen. Key kostenlos anfordern unter https://ebird.org/api/keygen"
             return
         }
         loading = true
@@ -103,7 +103,7 @@ fun SightingsScreen(viewModel: AppViewModel) {
         Column(modifier = Modifier.fillMaxSize().padding(padding).padding(12.dp)) {
             if (apiKey.isBlank()) {
                 Text(
-                    "Ohne eBird-API-Key keine Live-Daten. Key kostenlos auf ebird.org holen und in den Einstellungen speichern.",
+                    "Ohne eBird-API-Key keine Live-Daten. Key kostenlos auf https://ebird.org/api/keygen anfordern und in den Einstellungen speichern.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -120,7 +120,7 @@ fun SightingsScreen(viewModel: AppViewModel) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Filled.Star, null, tint = Color(0xFFB07C1F), modifier = Modifier.size(18.dp))
                     Text(
-                        " ${notable.size} seltene/bemerkenswerte Arten in 60 km Umkreis",
+                        " ${notable.size} seltene/bemerkenswerte Arten in 50 km Umkreis",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -128,7 +128,7 @@ fun SightingsScreen(viewModel: AppViewModel) {
             }
             val shown = if (showNotableOnly) notable else all
             Text(
-                "${shown.size} angezeigt · ${all.size} gesamt",
+                "${shown.size} angezeigt \u00b7 ${all.size} gesamt",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 6.dp)
@@ -198,14 +198,14 @@ private fun SightingCard(s: Sighting) {
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    "${s.scientificName} · ${s.locationName}",
+                    "${s.scientificName} \u00b7 ${s.locationName}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    s.observedAt.format(df) + " Uhr · " + String.format(Locale.GERMAN, "%.4f", s.lat) + ", " + String.format(Locale.GERMAN, "%.4f", s.lon),
+                    s.observedAt.format(df) + " Uhr \u00b7 " + String.format(Locale.GERMAN, "%.4f", s.lat) + ", " + String.format(Locale.GERMAN, "%.4f", s.lon),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary
                 )
