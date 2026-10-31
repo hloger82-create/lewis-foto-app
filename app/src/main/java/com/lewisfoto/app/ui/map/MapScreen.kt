@@ -313,7 +313,7 @@ private fun coloredPin(context: android.content.Context, motif: Motif): Drawable
         close()
     }
     canvas.drawPath(pinPath, paint)
-    paint.color = Color.WHITE.toArgb()
+    paint.color = android.graphics.Color.WHITE
     canvas.drawCircle(cx, headCy, headR * 0.72f, paint)
     val icon = ContextCompat.getDrawable(context, motif.icon)?.mutate() ?: return null
     val iconSize = (headR * 1.15f).toInt()
