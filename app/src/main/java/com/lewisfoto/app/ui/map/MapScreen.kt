@@ -1,5 +1,11 @@
 package com.lewisfoto.app.ui.map
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.RectF
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -289,10 +295,35 @@ fun MapScreen(
 }
 
 private fun coloredPin(context: android.content.Context, motif: Motif): Drawable? {
-    val base = ContextCompat.getDrawable(context, android.R.drawable.ic_menu_mylocation) ?: return null
-    val d = base.mutate()
-    d.setTint(Color(motif.colorHex).toArgb())
-    return d
+    val density = context.resources.displayMetrics.density
+    val sizePx = (40 * density).toInt()
+    val bmp = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bmp)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val cx = sizePx / 2f
+    val headR = sizePx * 0.30f
+    val headCy = sizePx * 0.32f
+    val tipY = sizePx * 0.97f
+    val motifColor = Color(motif.colorHex).toArgb()
+    paint.color = motifColor
+    val pinPath = Path().apply {
+        moveTo(cx - headR, headCy)
+        arcTo(RectF(cx - headR, headCy - headR, cx + headR, headCy + headR), 180f, 180f)
+        lineTo(cx, tipY)
+        close()
+    }
+    canvas.drawPath(pinPath, paint)
+    paint.color = Color.WHITE.toArgb()
+    canvas.drawCircle(cx, headCy, headR * 0.72f, paint)
+    val icon = ContextCompat.getDrawable(context, motif.icon)?.mutate() ?: return null
+    val iconSize = (headR * 1.15f).toInt()
+    icon.setBounds(
+        (cx - iconSize / 2).toInt(), (headCy - iconSize / 2).toInt(),
+        (cx + iconSize / 2).toInt(), (headCy + iconSize / 2).toInt()
+    )
+    icon.setTint(motifColor)
+    icon.draw(canvas)
+    return BitmapDrawable(context.resources, bmp)
 }
 
 @Composable

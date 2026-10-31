@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -217,8 +217,8 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                items(viewModel.motifs) { motif ->
-                    MotifTile(motif = motif, onClick = { onMotifClick(motif) })
+                itemsIndexed(viewModel.motifs) { index, motif ->
+                    MotifTile(motif = motif, alt = index % 2 == 1, onClick = { onMotifClick(motif) })
                 }
             }
             }
@@ -226,15 +226,18 @@ fun HomeScreen(
     }
 }
 
+private val TILE_A = Color(0xE6222E3A)   // tiefes Blau-Grau
+private val TILE_B = Color(0xE62E4A3A)   // warmes Moosgruen
+
 @Composable
-private fun MotifTile(motif: Motif, onClick: () -> Unit) {
+private fun MotifTile(motif: Motif, alt: Boolean, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(3.0f)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(motif.colorHex).copy(alpha = 0.55f)),
+        colors = CardDefaults.cardColors(containerColor = if (alt) TILE_B else TILE_A),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
