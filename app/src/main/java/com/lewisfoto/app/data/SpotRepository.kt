@@ -135,9 +135,9 @@ object SpotRepository {
         ),
         FotoSpot(
             id = "sound_of_harris_seals",
-            name = "Sound of Harris – Kegelrobben-Kolonie Groay (Fähre Leverburgh–Berneray)",
+            name = "Insel Groay im Sound of Harris – Kegelrobben-Kolonie (Fähre Leverburgh–Berneray)",
             motif = Motif.SEALS,
-            lat = 57.7450, lon = -7.0970,
+            lat = 57.7330, lon = -7.1380,
             ratings = listOf(r(SPRING, 80), r(SUMMER, 85), r(AUTUMN, 95), r(WINTER, 90)),
             bestTimeOfDay = "Bei der Fährüberfahrt, gesamte Strecke beobachten",
             tide = t(low = true, note = "Bei Ebbe sitzen Robben auf den Felsen (Groay)"),
@@ -167,13 +167,16 @@ object SpotRepository {
         ),
         FotoSpot(
             id = "shawbost_loch_roag_seals",
-            name = "Shawbost / Loch Roag Inseln (Seehunde)",
+            name = "Äußerer Loch Roag – Robben-Inseln Bearasaigh / Flodaigh / Vacsay (ab Shawbost)",
             motif = Motif.SEALS,
-            lat = 58.4750, lon = -6.7950,
+            lat = 58.4400, lon = -6.8300,
             ratings = listOf(r(SPRING, 85), r(SUMMER, 90), r(AUTUMN, 85), r(WINTER, 80)),
             bestTimeOfDay = "Bei Ebbe",
-            tide = t(low = true, note = "Seehunde ruhen bei Ebbe auf Felsen und Sandbänken"),
-            tips = listOf("Loch Roag: Kayak-Touren ab Shawbost zu Robben-Kolonien (z. B. Eilean Mhuile)."),
+            tide = t(low = true, note = "Seehunde ruhen bei Ebbe auf den Felsen der Inseln im äußeren Loch Roag"),
+            tips = listOf(
+                "Loch Roag: Kayak-Touren ab Shawbost zu den Robben-Inseln (Bearasaigh, Flodaigh, Vacsay).",
+                "Vom Ufer bei Shawbost aus mit Teleobjektiv auf die Inseln fotografieren."
+            ),
             safety = listOf("Bei Kayak: Schwimmweste, Tide beachten."),
             parking = p("Parkplatz Shawbost", "Kleiner Parkplatz an der Küste, gebührenfrei", "ca. 300 m Fußweg"),
             sources = listOf("Visit Outer Hebrides", "Virtual Hebrides – Seals")
@@ -208,20 +211,20 @@ object SpotRepository {
             sources = listOf("Scotsman – beste Seal-Spots Schottlands", "Virtual Hebrides", "latlong.net (Koordinaten Stornoway 58.209435, -6.384869)")
         ),
         FotoSpot(
-            id = "aird_mhuile_seals",
-            name = "Aird a' Mhuile / Bragar (Nordwest-Lewis)",
+            id = "aird_mhor_bragar_seals",
+            name = "Aird Mhòr Bragar – Küsten-Point (Nordwest-Lewis, zw. Labost und Bragar)",
             motif = Motif.SEALS,
-            lat = 58.4750, lon = -6.6800,
+            lat = 58.4700, lon = -6.7250,
             ratings = listOf(r(SPRING, 85), r(SUMMER, 90), r(AUTUMN, 85), r(WINTER, 80)),
             bestTimeOfDay = "2 Stunden vor/nach Niedrigwasser",
             tide = t(low = true, note = "Robben auf den Felsen bei Ebbe am Point"),
             tips = listOf(
-                "Dokumentierter Hotspot für Robben am Aird a' Mhuile.",
+                "Küsten-Headland Aird Mhòr an der NW-Küste bei Bragar – Robben auf den Felsen.",
                 "Gute Kombination mit Loch Ordais (Limikolen) in der Nähe."
             ),
             safety = listOf("Felsiger Point: Trittsicherheit, nicht bei Sturm hinausgehen."),
-            parking = p("Parkplatz an der Straße nach Aird a' Mhuile", "Kleine Parkbucht, gebührenfrei", "ca. 400 m Fußweg zum Point"),
-            sources = listOf("Virtual Hebrides", "Visit Outer Hebrides")
+            parking = p("Parkbucht an der A858 bei Labost (südl. Bragar)", "Kleine Parkbucht an der Küstenstraße, gebührenfrei", "ca. 500 m Fußweg zum Point"),
+            sources = listOf("Gazetteer for Scotland – Aird More Bragar (Headland an der NW-Küste)", "Visit Outer Hebrides – West Side Coastal Path", "Virtual Hebrides")
         ),
         FotoSpot(
             id = "northton_waders",
