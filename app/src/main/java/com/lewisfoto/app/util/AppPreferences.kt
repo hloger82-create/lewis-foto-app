@@ -21,6 +21,7 @@ class AppPreferences(private val context: Context) {
         private val DARK_MODE = booleanPreferencesKey("dark_mode")
         private val FAVORITES = stringPreferencesKey("favorite_spot_ids")
         private val CUSTOM_COORDS = stringPreferencesKey("custom_coords")
+        private val EBIRD_API_KEY = stringPreferencesKey("ebird_api_key")
     }
 
     val tripDate: Flow<LocalDate> = context.dataStore.data.map { prefs ->
@@ -34,6 +35,14 @@ class AppPreferences(private val context: Context) {
 
     val favorites: Flow<Set<String>> = context.dataStore.data.map { prefs ->
         (prefs[FAVORITES] ?: "").split(",").filter { it.isNotBlank() }.toSet()
+    }
+
+    val ebirdApiKey: Flow<String> = context.dataStore.data.map { prefs ->
+        prefs[EBIRD_API_KEY] ?: ""
+    }
+
+    suspend fun setEbirdApiKey(key: String) {
+        context.dataStore.edit { it[EBIRD_API_KEY] = key.trim() }
     }
 
     val customCoords: Flow<Map<String, Pair<Double, Double>>> = context.dataStore.data.map { prefs ->
