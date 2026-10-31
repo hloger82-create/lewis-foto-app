@@ -12,8 +12,8 @@
       <gradient android:startColor="#1B2A4A" android:endColor="#E8834F" android:angle="270" />
     </aapt:attr>
   </path>
-  <circle android:fillColor="#FFE9B8" android:cx="206" cy="470" r="42"/>
-  <circle android:fillColor="#FFD98A" android:fillAlpha="0.35" android:cx="206" cy="470" r="90"/>
+  <path android:fillColor="#FFE9B8" android:pathData="M164,470 a42,42 0 1,0 84,0 a42,42 0 1,0 -84,0 Z"/>
+  <path android:fillColor="#FFD98A" android:fillAlpha="0.35" android:pathData="M116,470 a90,90 0 1,0 180,0 a90,90 0 1,0 -180,0 Z"/>
   <path android:pathData="M0,560 H412 V900 H0 Z">
     <aapt:attr name="android:fillColor">
       <gradient android:startColor="#3E6E8E" android:endColor="#0B2E3C" android:angle="270" />
