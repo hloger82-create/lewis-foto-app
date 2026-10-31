@@ -15,7 +15,7 @@ object EbirdService {
     private const val BASE = "https://api.ebird.org/v2"
     private const val CENTER_LAT = 57.98
     private const val CENTER_LON = -6.75
-    private const val RADIUS_KM = 60
+    private const val RADIUS_KM = 50
 
     suspend fun recentSightings(apiKey: String, daysBack: Int = 3, maxResults: Int = 200): Result<List<Sighting>> =
         withContext(Dispatchers.IO) {
