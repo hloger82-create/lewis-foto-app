@@ -11,18 +11,21 @@ object SpotRepository {
         "Hebridean Whale & Dolphin Trust (HWDT) – Sichtungsdaten & Tiumpan Head" to "https://www.hwdt.org",
         "RSPB – Vogelschutz & Reserves Äußere Hebriden (Loch na Muilne)" to "https://www.rspb.org.uk",
         "SNH / NatureScot – Schutzgebiete & Brutvorkommen" to "https://www.nature.scot",
-        "Visit Outer Hebrides – Spot-Guides (Eagles, Deer, Hare, Seals, Bird of Prey Trail)" to "https://www.visitouterhebrides.co.uk",
+        "Visit Outer Hebrides – Spot-Guides (Eagles, Deer, Hare, Seals, Bird of Prey Trail, Photography Trail)" to "https://www.visitouterhebrides.co.uk",
         "VisitScotland – Lewis & Harris Highlights" to "https://www.visitscotland.com",
         "Scottish Wildlife Trust – Reserves Outer Hebrides" to "https://scottishwildlifetrust.org.uk",
         "WalkHighlands – North Harris Eagle Observatory & Wanderungen" to "https://www.walkhighlands.co.uk",
         "Grinneabhat (Bragar) – Birdwatching West-Lewis" to "https://www.grinneabhat.com",
         "Western Isles Wildlife – Vogelarten & Status / Latest Sightings" to "https://western-isles-wildlife.co.uk",
         "BirdForum Opus – Isle of Lewis" to "https://www.birdforum.net/opus/Isle_of_Lewis",
+        "Birdingplaces.eu / BirdGuides – Birding-Spots Outer Hebrides" to "https://birdingplaces.eu",
+        "eBird (Cornell Lab) – aktuelle Vogelsichtungen (letzte 3 Tage)" to "https://ebird.org",
         "Seatrek (Miavaig) – Wildlife-Bootstouren" to "https://www.seatrek.co.uk",
         "Immerse Hebrides (Stornoway) – Wal- & Delfintouren" to "https://www.immersehebrides.com",
         "Hebridean Adventures – Minch-Kreuzfahrten" to "https://www.hebrideanadventures.co.uk",
         "Reasort Estates – Amhuinnsuidhe (Deer, Otter)" to "https://reasortestates.co.uk",
-        "PetaPixel / Wex Photo Video / John MacLean Photography / highlands2hammocks – Fotospots" to "https://www.petapixel.com",
+        "Richard Watson / Warner-Tate / Nature TTL / landscapelocations / imageseen – Foto-Workshops & Locations" to "https://www.richardwatsonphoto.com",
+        "PetaPixel / Wex Photo Video / John MacLean Photography / highlands2hammocks – Fotospot-Blogs" to "https://www.petapixel.com",
         "OpenStreetMap – Kartenmaterial & Parkplätze (ODbL)" to "https://www.openstreetmap.org",
         "Wikidata / Wikipedia / British Listed Buildings – verifizierte Koordinaten" to "https://www.wikidata.org",
         "Open-Meteo – Wettervorhersage (CC BY 4.0)" to "https://open-meteo.com",
@@ -102,7 +105,7 @@ object SpotRepository {
             id = "pairc_seaforth_otter",
             name = "Pairc / Ufer des Loch Seaforth (Süd-Lewis)",
             motif = Motif.OTTER,
-            lat = 57.9500, lon = -6.5200,
+            lat = 57.9600, lon = -6.5450,
             ratings = listOf(r(SPRING, 70), r(SUMMER, 75), r(AUTUMN, 80), r(WINTER, 70)),
             bestTimeOfDay = "Dämmerung",
             tide = null,
@@ -132,9 +135,9 @@ object SpotRepository {
         ),
         FotoSpot(
             id = "sound_of_harris_seals",
-            name = "Sound of Harris – Kegelrobben-Kolonie (Fähre Leverburgh–Berneray)",
+            name = "Sound of Harris – Kegelrobben-Kolonie Groay (Fähre Leverburgh–Berneray)",
             motif = Motif.SEALS,
-            lat = 57.7678, lon = -7.0170,
+            lat = 57.7450, lon = -7.0970,
             ratings = listOf(r(SPRING, 80), r(SUMMER, 85), r(AUTUMN, 95), r(WINTER, 90)),
             bestTimeOfDay = "Bei der Fährüberfahrt, gesamte Strecke beobachten",
             tide = t(low = true, note = "Bei Ebbe sitzen Robben auf den Felsen (Groay)"),
@@ -229,7 +232,7 @@ object SpotRepository {
             bestTimeOfDay = "Bei Ebbe und um Niedrigwasser",
             tide = t(low = true, note = "Wattflächen bei Ebbe: beste Limikolen-Beobachtung"),
             tips = listOf(
-                "Feuchte Machair-Flächen und Strand: Steinwälzer, Ringel-/Sandregenpfeifer, Lummertölpel, Knutts.",
+                "Feuchte Machair-Flächen und Strand: Steinwälzer, Ringel-/Sandregenpfeifer, Lummen, Knutt.",
                 "Winter: zusätzlich Alpenstrandläufer und Sanderlinge."
             ),
             safety = listOf("Machair nicht mit dem Auto befahren – empfindliches Grasland."),
@@ -245,7 +248,7 @@ object SpotRepository {
             bestTimeOfDay = "Frühling/Sommer Brutzeit; Winter: Pfeifschwäne & Gänse",
             tide = null,
             tips = listOf(
-                "RSPB-Reservat: seltene Rotschnabel-Phalarope (red-necked phalarope), Rotschenkel, Kiebitz, Schnepfen.",
+                "RSPB-Reservat: seltenes Thorshühnchen (red-necked phalarope), Rotschenkel, Kiebitz, Schnepfen.",
                 "Aussichtspunkt (cairn) mit Blick über die zwei Seen.",
                 "Hunde an der Leine (Brutzeit April–Mitte August)."
             ),
@@ -276,7 +279,7 @@ object SpotRepository {
             tide = t(low = false, note = "Bei Flut ziehen sich Watvögel auf die Salzwiesen zurück – Hochwasserrand ideal"),
             tips = listOf(
                 "Salzwiesen bei Tong/Gress: Austernfischer, Rotschenkel, Brachvögel, evtl. Zwergschnepfen.",
-                "Bis zu 800 Trauerenten in der Broad Bay im Winter – Spektiv mitnehmen."
+                "Bis zu 800 Eistaucher in der Broad Bay im Winter – Spektiv mitnehmen."
             ),
             safety = listOf("Salzwiesen nicht betreten – Brut- und Rastgebiet."),
             parking = p("Parkplatz am Gress Beach / Tong", "Parkplatz an der Küstenstraße, gebührenfrei", "ca. 200 m Fußweg zu den Salzwiesen"),
@@ -429,7 +432,7 @@ object SpotRepository {
             ratings = listOf(r(SPRING, 75), r(SUMMER, 95), r(AUTUMN, 85), r(WINTER, 40)),
             bestTimeOfDay = "Saisonale Mehrtages-Kreuzfahrten (Sommer)",
             tide = null,
-            tips = listOf("Mit Guide Chris Gomersall: Minke, Schweinswale, Delfine, Orcas möglich; auch Haihai und Riesenhai."),
+            tips = listOf("Mit Guide Chris Gomersall: Minke, Schweinswale, Delfine, Orcas möglich; auch Riesenhai."),
             safety = listOf("Mehrtagestour: Seekrankheit, warme Kleidung."),
             parking = p("Hafen Stornoway / Ullapool", "Je nach Abfahrtshafen", "direkt am Anleger"),
             sources = listOf("Hebridean Adventures (hebrideanadventures.co.uk)", "HWDT")
@@ -552,13 +555,13 @@ object SpotRepository {
             id = "loch_seaforth_eagles",
             name = "Ufer des Loch Seaforth (Süd-Lewis)",
             motif = Motif.EAGLES,
-            lat = 57.9500, lon = -6.5200,
+            lat = 57.9600, lon = -6.5450,
             ratings = listOf(r(SPRING, 85), r(SUMMER, 90), r(AUTUMN, 80), r(WINTER, 70)),
             bestTimeOfDay = "Morgens und nachmittags",
             tide = null,
             tips = listOf("Seeadler-Starkburg entlang des Loch Seaforth (Bird-of-Prey-Trail)."),
             safety = listOf("Nebenstraße eng – Ausweichstellen nutzen."),
-            parking = p("Parkbucht Loch Seaforth", "Unbefestigte Bucht, gebührenfrei", "ca. 300 m Fußweg zum Ufer"),
+            parking = p("Parkbucht Loch Seaforth (Ardveg)", "Unbefestigte Bucht, gebührenfrei", "ca. 300 m Fußweg zum Ufer"),
             sources = listOf("Visit Outer Hebrides – Bird of Prey Trail")
         ),
         FotoSpot(
@@ -592,14 +595,14 @@ object SpotRepository {
         ),
         FotoSpot(
             id = "broad_bay_divers",
-            name = "Broad Bay – Trauerenten & Pfeifschwäne",
+            name = "Broad Bay – Eistaucher & Pfeifschwäne",
             motif = Motif.OTHER_ANIMALS,
             lat = 58.2500, lon = -6.3000,
             ratings = listOf(r(SPRING, 75), r(SUMMER, 50), r(AUTUMN, 85), r(WINTER, 95)),
             bestTimeOfDay = "Winter: ganztägig auf dem Wasser",
             tide = null,
             tips = listOf(
-                "Im Spätwinter bis zu 800 Trauerenten (Great Northern Divers) in der Broad Bay.",
+                "Im Spätwinter bis zu 800 Eistaucher (Great Northern Divers) in der Broad Bay.",
                 "Pfeifschwäne auf den Salzwiesen bei Tong."
             ),
             safety = listOf("Am Ufer bleiben, Vögel nicht aufscheuchen."),
@@ -608,13 +611,13 @@ object SpotRepository {
         ),
         FotoSpot(
             id = "stornoway_black_guillemot",
-            name = "Hafen Stornoway – Tordalken (Black Guillemots)",
+            name = "Hafen Stornoway – Trottellummen (Black Guillemots)",
             motif = Motif.OTHER_ANIMALS,
             lat = 58.2094, lon = -6.3849,
             ratings = listOf(r(SPRING, 90), r(SUMMER, 90), r(AUTUMN, 90), r(WINTER, 90)),
             bestTimeOfDay = "Ganzjährig am Kai",
             tide = null,
-            tips = listOf("Tordalken (Tysties) leben ganzjährig im Hafen – leicht zu fotografieren."),
+            tips = listOf("Trottellummen (Tysties) leben ganzjährig im Hafen – leicht zu fotografieren."),
             safety = listOf("Hafenbereich: Kai-Kanten meiden."),
             parking = p("Parkplatz Hafen Stornoway", "Gebührenpflichtig tagsüber", "direkt am Kai"),
             sources = listOf("Western Isles Wildlife", "RSPB")
@@ -662,7 +665,20 @@ object SpotRepository {
             ),
             safety = listOf("Ebbe/Flut beachten – langer Rückweg über Watt möglich."),
             parking = p("Parkplatz Luskentyre Beach", "Großer Parkplatz am Ende der Single-Track-Road, gebührenfrei", "direkt am Strand"),
-            sources = listOf("VisitScotland", "OpenStreetMap")
+            sources = listOf("VisitScotland", "OpenStreetMap", "Warner-Tate Photography", "Nature TTL")
+        ),
+        FotoSpot(
+            id = "luskentyre_hill_viewpoint",
+            name = "Aussichtspunkt über Luskentyre Bay (A859, Süd-Harris)",
+            motif = Motif.LANDSCAPE,
+            lat = 57.9330, lon = -7.0520,
+            ratings = listOf(r(SPRING, 95), r(SUMMER, 98), r(AUTUMN, 98), r(WINTER, 90)),
+            bestTimeOfDay = "Jede Tageszeit – Panorama über Bucht, Taransay, Nord-Harris-Berge",
+            tide = null,
+            tips = listOf("„Größter Straßenrand-Ausblick Schottlands“ (Nature TTL): ca. 6 km nach der Luskentyre-Abbiegung, Hügel oberhalb der Straße."),
+            safety = listOf("Parkbucht nutzen, nicht auf der Fahrbahn halten."),
+            parking = p("Parkbucht am Hügel (A859)", "Ausweichbucht, gebührenfrei", "direkt am Aussichtspunkt"),
+            sources = listOf("Nature TTL – Photography Trip Lewis & Harris", "Warner-Tate Photography")
         ),
         FotoSpot(
             id = "seilebost_beach",
@@ -730,6 +746,19 @@ object SpotRepository {
             sources = listOf("VisitScotland", "OpenStreetMap", "latitude.to (Port of Ness 58.4892, -6.2227)")
         ),
         FotoSpot(
+            id = "traigh_mor_ness",
+            name = "Traigh Mòr (Port of Ness, Nord-Lewis) – längster Strand",
+            motif = Motif.LANDSCAPE,
+            lat = 58.5000, lon = -6.2600,
+            ratings = listOf(r(SPRING, 90), r(SUMMER, 98), r(AUTUMN, 95), r(WINTER, 85)),
+            bestTimeOfDay = "Abendsonne",
+            tide = t(low = true, note = "Bei Ebbe kilometerlange Wattfläche"),
+            tips = listOf("Einer der längsten Strände von Lewis (Visit Outer Hebrides Photography Trail)."),
+            safety = listOf("Dünen nicht betreten."),
+            parking = p("Parkplatz Traigh Mòr / Port Ness", "Parkplatz am Strand, gebührenfrei", "direkt am Strand"),
+            sources = listOf("Visit Outer Hebrides – Photography Trail", "Warner-Tate Photography")
+        ),
+        FotoSpot(
             id = "whalebone_arch_bragar",
             name = "Whalebone Arch (Bragar, West-Lewis) – Küstenfelsen",
             motif = Motif.LANDSCAPE,
@@ -753,7 +782,72 @@ object SpotRepository {
             tips = listOf("15. Jh. Kirche mit berühmten mittelalterlichen Schnitzereien – Top-Fotomotiv (Innenraum)."),
             safety = listOf("Kirche respektvoll betreten; kein Stativ ohne Erlaubnis."),
             parking = p("Parkplatz St Clement's Church", "Kirchenparkplatz, gebührenfrei", "direkt an der Kirche"),
-            sources = listOf("johnmacleanphotography.com", "Historic Environment Scotland", "Visit Outer Hebrides")
+            sources = listOf("johnmacleanphotography.com", "Historic Environment Scotland", "Visit Outer Hebrides", "Nature Talks – Fototour")
+        ),
+        FotoSpot(
+            id = "mangersta_sea_stacks",
+            name = "Mangersta Sea Stacks (Stac Dhomhnuill Chaim)",
+            motif = Motif.LANDSCAPE,
+            lat = 58.1417, lon = -7.0500,
+            ratings = listOf(r(SPRING, 95), r(SUMMER, 98), r(AUTUMN, 95), r(WINTER, 90)),
+            bestTimeOfDay = "Abendlicht von Westen auf die Stacks",
+            tide = t(low = true, note = "Bei Ebbe Stacks und Watt zugänglich"),
+            tips = listOf("Spektakuläre Atlantik-Felsnadeln – Top-Motiv der Fotografen (imageseen, landscapelocations)."),
+            safety = listOf("Felsen rutschig; Klippenrand meiden."),
+            parking = p("Parkplatz Mangersta", "Parkbucht am Strand, gebührenfrei", "ca. 400 m Fußweg zu den Stacks"),
+            sources = listOf("imageseen.co.uk – Harris & Lewis Workshop", "landscapelocations.com", "Visit Outer Hebrides – Photography Trail")
+        ),
+        FotoSpot(
+            id = "garry_sands_stacks",
+            name = "Garry Sands & Felsnadeln (Nordost-Lewis)",
+            motif = Motif.LANDSCAPE,
+            lat = 58.3700, lon = -6.2300,
+            ratings = listOf(r(SPRING, 95), r(SUMMER, 98), r(AUTUMN, 95), r(WINTER, 90)),
+            bestTimeOfDay = "Morgenlicht auf den Stacks",
+            tide = t(low = true, note = "Bei Ebbe Stacks aus dem Sand ragend"),
+            tips = listOf("„Enigmatische Felsnadeln im Sand“ (Visit Outer Hebrides Photography Trail); Garry Beach ideal für ICM/Langzeit."),
+            safety = listOf("Watt weich bei Ebbe."),
+            parking = p("Parkplatz Garry Beach", "Parkplatz am Strand, gebührenfrei", "direkt am Strand"),
+            sources = listOf("Visit Outer Hebrides – Photography Trail", "Warner-Tate Photography – Top 10 Locations")
+        ),
+        FotoSpot(
+            id = "dun_carloway_broch",
+            name = "Dun Carloway Broch (West-Lewis)",
+            motif = Motif.LANDSCAPE,
+            lat = 58.3500, lon = -6.7500,
+            ratings = listOf(r(SPRING, 95), r(SUMMER, 98), r(AUTUMN, 95), r(WINTER, 90)),
+            bestTimeOfDay = "Später Nachmittag / Gegenlicht",
+            tide = null,
+            tips = listOf("Besterhaltener Broch Schottlands (eisenzeitlich) – Fotografen-Favorit (Warner-Tate, Heatherlea)."),
+            safety = listOf("Innenaufstieg eng; Turm nicht besteigen."),
+            parking = p("Parkplatz Dun Carloway", "Parkplatz am Besucherzentrum, gebührenfrei", "ca. 200 m Fußweg"),
+            sources = listOf("Warner-Tate Photography", "Historic Environment Scotland", "heatherlea.co.uk")
+        ),
+        FotoSpot(
+            id = "scalpay_lighthouse",
+            name = "Scalpay / Eilean Glas Lighthouse (Südost-Harris)",
+            motif = Motif.LANDSCAPE,
+            lat = 57.8620, lon = -6.7000,
+            ratings = listOf(r(SPRING, 95), r(SUMMER, 98), r(AUTUMN, 95), r(WINTER, 90)),
+            bestTimeOfDay = "Sonnenuntergang über dem Sound",
+            tide = t(low = true, note = "Bei Ebbe Felsen zur Insel begehbar (Vorsicht Tide!)"),
+            tips = listOf("Leuchtturm auf Scalpay – klassisches Motiv von Land und vom Wasser (imageseen, John MacLean)."),
+            safety = listOf("Tide beachten – Scalpay nur bei Ebbe zu Fuß erreichbar."),
+            parking = p("Parkplatz am Scalpay-Anleger (Tarbert)", "Fähre/Boot ab Tarbert; Parkplatz an der Pier, gebührenfrei", "Fähre zur Insel"),
+            sources = listOf("imageseen.co.uk", "johnmacleanphotography.com", "Visit Outer Hebrides")
+        ),
+        FotoSpot(
+            id = "gearrannan_blackhouses",
+            name = "Gearrannan Blackhouse Village (Uig, West-Lewis)",
+            motif = Motif.LANDSCAPE,
+            lat = 58.1300, lon = -6.7800,
+            ratings = listOf(r(SPRING, 90), r(SUMMER, 95), r(AUTUMN, 90), r(WINTER, 85)),
+            bestTimeOfDay = "Blaue Stunde / Abendlicht",
+            tide = null,
+            tips = listOf("Ruinierte Blackhouses an der Küste – stimmungsvolles Kulturlandschafts-Motiv (landscapelocations)."),
+            safety = listOf("Ruinen einsturzgefährdet – nicht betreten."),
+            parking = p("Parkplatz Gearrannan", "Kleiner Parkplatz, gebührenfrei", "direkt an den Ruinen"),
+            sources = listOf("landscapelocations.com – Harris & Lewis Tour", "Visit Outer Hebrides")
         )
     )
 
