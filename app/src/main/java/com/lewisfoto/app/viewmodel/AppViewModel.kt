@@ -33,6 +33,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val favorites: StateFlow<Set<String>> = prefs.favorites
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
 
+    val ebirdApiKey: StateFlow<String> = prefs.ebirdApiKey
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+
     val customCoords: StateFlow<Map<String, Pair<Double, Double>>> = prefs.customCoords
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
 
@@ -61,6 +64,8 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun setTripDate(date: LocalDate) = viewModelScope.launch { prefs.setTripDate(date) }
 
     fun setDarkMode(enabled: Boolean) = viewModelScope.launch { prefs.setDarkMode(enabled) }
+
+    fun setEbirdApiKey(key: String) = viewModelScope.launch { prefs.setEbirdApiKey(key) }
 
     fun setCustomCoords(spotId: String, lat: Double, lon: Double) =
         viewModelScope.launch { prefs.setCustomCoords(spotId, lat, lon) }
