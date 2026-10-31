@@ -1,6 +1,8 @@
 package com.lewisfoto.app.viewmodel
 
 import android.app.Application
+import android.graphics.Bitmap
+import com.lewisfoto.app.util.HomeBackground
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.lewisfoto.app.data.FotoSpot
@@ -74,4 +76,18 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch { prefs.resetCustomCoords(spotId) }
 
     fun toggleFavorite(spotId: String) = viewModelScope.launch { prefs.toggleFavorite(spotId) }
+
+    private val _homeBg = MutableStateFlow<Bitmap?>(null)
+    val homeBg: StateFlow<Bitmap?> = _homeBg
+
+    fun hasCustomHomeBg(): Boolean = HomeBackground.hasCustom(getApplication())
+
+    fun reloadHomeBg() = viewModelScope.launch {
+        _homeBg.value = HomeBackground.loadBitmap(getApplication())
+    }
+
+    fun clearHomeBg() = viewModelScope.launch {
+        HomeBackground.clear(getApplication())
+        _homeBg.value = null
+    }
 }

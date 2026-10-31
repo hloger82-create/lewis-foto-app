@@ -41,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,6 +51,7 @@ import com.lewisfoto.app.R
 import com.lewisfoto.app.data.Motif
 import com.lewisfoto.app.ui.components.MotifIcon
 import com.lewisfoto.app.viewmodel.AppViewModel
+import androidx.compose.runtime.LaunchedEffect
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -65,6 +67,8 @@ fun HomeScreen(
     val tripDate by viewModel.tripDate.collectAsStateWithLifecycle()
     val season by viewModel.season.collectAsStateWithLifecycle()
     val notes by viewModel.seasonNotes.collectAsStateWithLifecycle()
+    val homeBg by viewModel.homeBg.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { viewModel.reloadHomeBg() }
     var showDatePicker by remember { mutableStateOf(false) }
 
     if (showDatePicker) {
@@ -93,8 +97,10 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            val bgPainter = homeBg?.let { androidx.compose.ui.graphics.painter.BitmapPainter(it.asImageBitmap()) }
+                ?: painterResource(R.drawable.bg_home_photo)
             Image(
-                painter = painterResource(R.drawable.bg_home_photo),
+                painter = bgPainter,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
