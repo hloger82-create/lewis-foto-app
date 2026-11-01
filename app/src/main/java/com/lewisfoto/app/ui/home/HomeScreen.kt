@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.item
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -231,11 +232,10 @@ fun HomeScreen(
                     .weight(1f)
             ) {
                 itemsIndexed(viewModel.motifs) { index, motif ->
-                    if (motif == com.lewisfoto.app.data.Motif.OTHER) {
-                        AddSpotTile(alt = (index / 2 + index) % 2 == 1, onClick = { onMotifClick(motif) })
-                    } else {
-                        MotifTile(motif = motif, alt = (index / 2 + index) % 2 == 1, onClick = { onMotifClick(motif) })
-                    }
+                    MotifTile(motif = motif, alt = (index / 2 + index) % 2 == 1, onClick = { onMotifClick(motif) })
+                }
+                item {
+                    AddSpotTile(onClick = { onMotifClick(com.lewisfoto.app.data.Motif.OTHER) })
                 }
             }
             }
@@ -279,15 +279,14 @@ private fun MotifTile(motif: Motif, alt: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-private fun AddSpotTile(alt: Boolean, onClick: () -> Unit) {
+private fun AddSpotTile(onClick: () -> Unit) {
     androidx.compose.material3.Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(3.0f)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(14.dp),
         colors = androidx.compose.material3.CardDefaults.cardColors(
-            containerColor = if (alt) Color(0x66D6E0C0) else Color(0x66B8CCDD)
+            containerColor = Color(0x66B8CCDD)
         ),
         elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {

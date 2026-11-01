@@ -814,6 +814,33 @@ object SpotRepository {
             sources = listOf("Visit Outer Hebrides – Photography Trail", "Warner-Tate Photography – Top 10 Locations")
         ),
         FotoSpot(
+            id = "dailbeag_beach",
+            name = "Dailbeag Beach / Dail M\u00f2r (N von Carloway, West-Lewis)",
+            motif = Motif.LANDSCAPE,
+            lat = 58.3140, lon = -6.7363,
+            ratings = listOf(r(SPRING, 90), r(SUMMER, 95), r(AUTUMN, 90), r(WINTER, 75)),
+            bestTimeOfDay = "Sonnenuntergang (Bucht nach Westen)",
+            tide = t(low = true, note = "Bei Ebbe weite Sandfl\u00e4che, Atlantik-Wellen direkt in der Bucht"),
+            tips = listOf("Kleinere Bucht n\u00f6rdlich von Carloway; Westlage ideal f\u00fcr Sonnenuntergang.",
+                "Picknick-/BBQ-Fl\u00e4che und kleiner Parkplatz am Friedhof (Dail M\u00f2r)."),
+            safety = listOf("Atlantik-Wellen schlagen ungebremst in die Bucht \u2013 Abstand zum Wasser halten."),
+            parking = p("Parkplatz Dail M\u00f2r (Friedhof)", "Kleiner Parkplatz, geb\u00fchrenfrei, mit Picknickfl\u00e4che", "direkt an der Bucht"),
+            sources = listOf("fotospot.co.uk \u2013 Dailbeag Beach", "GeoNames 11153538 (58.3140, -6.7363)", "Wikipedia Dail M\u00f2r")
+        ),
+        FotoSpot(
+            id = "northton_salt_flats",
+            name = "Northton Salt Flats \u2013 Salzwasserlagune (Taobh Tuath, Harris)",
+            motif = Motif.LANDSCAPE,
+            lat = 57.8040, lon = -7.0750,
+            ratings = listOf(r(SPRING, 85), r(SUMMER, 90), r(AUTUMN, 90), r(WINTER, 80)),
+            bestTimeOfDay = "Bei Ebbe \u2013 Lagune f\u00e4llt vom Meer getrennt",
+            tide = t(low = true, note = "Bei Ebbe durch ausgedehnte Sande von der See getrennt \u2013 Spiegelungen"),
+            tips = listOf("Kleine Salzwasserlagune hinter den Sanden von Northton; bei Ebbe fotogen mit Spiegelungen."),
+            safety = listOf("Lagune nur bei Ebbe betreten; Watt weich."),
+            parking = p("Parkplatz Northton Beach", "Gemeinsam mit Northton Machair", "ca. 800 m Fu\u00dfweg zur Lagune"),
+            sources = listOf("fotospot.co.uk \u2013 Northton Salt Flats", "Visit Outer Hebrides \u2013 Northton")
+        ),
+        FotoSpot(
             id = "dun_carloway_broch",
             name = "Dun Carloway Broch (West-Lewis)",
             motif = Motif.LANDSCAPE,

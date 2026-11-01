@@ -146,7 +146,7 @@ fun MapScreen(
         if (activeFilter == null) allSpotsWithUser else allSpotsWithUser.filter { it.motif == activeFilter }
     }
     // eigene Spots in der Liste oben halten
-    val visibleOrdered = remember(visibleSpots) { visibleSpots.sortedBy { if (it.id.startsWith("user_")) 0 else 1 } }
+    val visibleOrdered = remember(visibleSpots) { visibleSpots }
 
     val mapView = remember {
         MapView(context).apply {
