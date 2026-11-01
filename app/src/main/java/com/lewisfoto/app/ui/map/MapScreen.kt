@@ -71,6 +71,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.Path as ComposePath
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -164,14 +165,13 @@ fun MapScreen(
 
     // --- GPS-Position (nur wenn Permission erteilt) ---
     DisposableEffect(hasLocationPermission) {
-        if (!hasLocationPermission) return@DisposableEffect
         val lm = context.getSystemService(android.content.Context.LOCATION_SERVICE) as android.location.LocationManager
         val cb = object : android.location.LocationListener {
             override fun onLocationChanged(loc: Location) {
                 myLocation = GeoPoint(loc.latitude, loc.longitude)
             }
         }
-        try {
+        if (hasLocationPermission) try {
             if (lm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER))
                 lm.requestLocationUpdates(android.location.LocationManager.GPS_PROVIDER, 5000L, 5f, cb)
             if (lm.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER))
@@ -180,7 +180,7 @@ fun MapScreen(
                 ?: lm.getLastKnownLocation(android.location.LocationManager.NETWORK_PROVIDER)
             if (last != null) myLocation = GeoPoint(last.latitude, last.longitude)
         } catch (_: SecurityException) {}
-        onDispose { try { lm.removeUpdates(cb) } catch (_: Exception) {} }
+        onDispose { try { if (hasLocationPermission) lm.removeUpdates(cb) } catch (_: Exception) {} }
     }
 
     LaunchedEffect(radarOn) {
@@ -447,7 +447,7 @@ fun MapScreen(
                     Box(modifier = Modifier.size(24.dp)) {
                         val rot = -headingDeg - mapView.mapOrientation
                         Canvas(modifier = Modifier.matchParentSize()) {
-                            this.rotate(rot, pivot = androidx.compose.ui.geometry.Offset(size.width/2f, size.height/2f)) {
+                            rotate(rot, pivot = androidx.compose.ui.geometry.Offset(size.width/2f, size.height/2f)) {
                                 val needle = ComposePath().apply {
                                     moveTo(size.width/2f, 3f)
                                     lineTo(size.width/2f + 5f, size.height/2f)
