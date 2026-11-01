@@ -226,8 +226,8 @@ fun HomeScreen(
     }
 }
 
-private val TILE_A = Color(0xCC5B7A99)   // helles entsättigtes Blaugrau
-private val TILE_B = Color(0xCC8FA876)   // helles entsättigtes Olivgruen
+private val TILE_A = Color(0x66B8CCDD)   // helles, transparentes Blaugrau
+private val TILE_B = Color(0x66D6E0C0)   // helles, transparentes Gruen
 
 @Composable
 private fun MotifTile(motif: Motif, alt: Boolean, onClick: () -> Unit) {

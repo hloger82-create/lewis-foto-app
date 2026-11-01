@@ -75,6 +75,9 @@ import com.lewisfoto.app.viewmodel.AppViewModel
 import org.osmdroid.tileprovider.MapTileProviderBasic
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.events.MapListener
+import org.osmdroid.events.ScrollEvent
+import org.osmdroid.events.ZoomEvent
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.util.MapTileIndex
 import org.osmdroid.views.MapView
@@ -106,6 +109,7 @@ fun MapScreen(
     val customCoords by viewModel.customCoords.collectAsStateWithLifecycle()
     var activeFilter by remember { mutableStateOf(motif) }
     var radarOn by remember { mutableStateOf(false) }
+    var zoomBig by remember { mutableStateOf(false) }
     var radarFrames by remember { mutableStateOf<Pair<String, List<String>>?>(null) }
 
     LaunchedEffect(radarOn) {
@@ -131,6 +135,15 @@ fun MapScreen(
             maxZoomLevel = 18.0
             controller.setZoom(8.5)
             controller.setCenter(GeoPoint(57.98, -6.75))
+            val zoomListener = object : MapListener {
+                override fun onScroll(event: ScrollEvent?): Boolean = false
+                override fun onZoom(event: ZoomEvent?): Boolean {
+                    zoomBig = mapView.zoomLevelDouble >= 15.0
+                    return false
+                }
+            }
+            mapView.addMapListener(zoomListener)
+            zoomBig = mapView.zoomLevelDouble >= 15.0
         }
     }
 
@@ -163,7 +176,7 @@ fun MapScreen(
         }
     }
 
-    DisposableEffect(visibleSpots, customCoords) {
+    DisposableEffect(visibleSpots, customCoords, zoomBig) {
         mapView.overlays.removeAll { it is Marker }
         visibleSpots.forEach { spot ->
             val marker = Marker(mapView).apply {
@@ -172,7 +185,7 @@ fun MapScreen(
                 title = spot.name
                 val rating = spot.ratingFor(tripSeason)
                 snippet = "${spot.motif.labelDe} · ${rating?.probability ?: 0} %"
-                icon = coloredPin(context, spot.motif)
+                icon = coloredPin(context, spot.motif, if (zoomBig) 2f else 1f)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 setOnMarkerClickListener { _, _ ->
                     onSpotClick(spot)
@@ -296,9 +309,9 @@ fun MapScreen(
     }
 }
 
-private fun coloredPin(context: android.content.Context, motif: Motif): Drawable? {
+private fun coloredPin(context: android.content.Context, motif: Motif, scale: Float = 1f): Drawable? {
     val density = context.resources.displayMetrics.density
-    val sizePx = (40 * density).toInt()
+    val sizePx = (40 * scale * density).toInt()
     val bmp = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bmp)
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
