@@ -19,6 +19,8 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -171,20 +173,35 @@ fun HomeScreen(
                 )
             }
 
+            var notesExpanded by remember { mutableStateOf(false) }
             Column(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 10.dp)
                     .clip(RoundedCornerShape(14.dp))
                     .background(Color(0x33000000))
+                    .clickable { notesExpanded = !notesExpanded }
                     .padding(12.dp)
             ) {
-                Text(
-                    text = "Saisonhinweise für dein Reisedatum",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                notes.take(3).forEach { note ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Saisonhinweise für dein Reisedatum",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Icon(
+                        imageVector = if (notesExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                        contentDescription = if (notesExpanded) "Weniger anzeigen" else "Alle anzeigen",
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                val shown = if (notesExpanded) notes else notes.take(3)
+                shown.forEach { note ->
                     Text(
                         text = "• $note",
                         style = MaterialTheme.typography.bodySmall,
