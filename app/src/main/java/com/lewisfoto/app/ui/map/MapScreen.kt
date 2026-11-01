@@ -28,7 +28,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.CloudQueue
+import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -198,9 +200,9 @@ fun MapScreen(
                 actions = {
                     IconToggleButton(checked = radarOn, onCheckedChange = { radarOn = it }) {
                         Icon(
-                            Icons.Filled.CloudQueue,
-                            contentDescription = "Niederschlagsradar",
-                            tint = if (radarOn) Color.White else Color.White.copy(alpha = 0.6f)
+                            imageVector = if (radarOn) Icons.Filled.Cloud else Icons.Outlined.CloudOff,
+                            contentDescription = if (radarOn) "Radar an" else "Radar aus",
+                            tint = Color.White
                         )
                     }
                 },

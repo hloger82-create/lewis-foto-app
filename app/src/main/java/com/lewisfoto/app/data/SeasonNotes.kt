@@ -11,14 +11,14 @@ object SeasonNotes {
             month in 10..12 -> {
                 notes += "Kegelrobben-Welpenzeit (Peak Okt–Dez): an abgelegenen Stränden Welpen möglich – immer Abstand halten."
                 notes += "Winter-Watvögel treffen ein: Limikolen an den Stränden und Wattflächen zahlreich."
-                notes += "Bis zu 800 Trauerenten (Great Northern Divers) können sich in der Broad Bay sammeln."
+                notes += "Bis zu 800 Eistaucher (Great Northern Divers) können sich in der Broad Bay sammeln."
                 notes += "Brunft der Rothirsche läuft bis ca. Mitte November aus – Hirsche noch aktiv, aber unberechenbar."
                 notes += "Seevögel wie Papageitaucher und Lummen sind zu dieser Zeit abwesend."
                 notes += "Minke-Wale sind im Winter selten; Schweinswale und Delfine bleiben realistisch (Tiumpan Head)."
                 notes += "Bootstouren (z. B. zu den Shiant Isles) fahren meist nicht – vorab Verfügbarkeit prüfen."
             }
             month in 1..2 -> {
-                notes += "Winter: Watvögel und Trauerenten in der Broad Bay, Schneehühner/Hasen in Weiß auf den Bergen."
+                notes += "Winter: Watvögel und Eistaucher in der Broad Bay, Schneehühner/Hasen in Weiß auf den Bergen."
                 notes += "Kurze Tage: Sonnenaufgang spät, Sonnenuntergang früh – Tageslicht für Fotografie begrenzen."
                 notes += "Stürme häufig: Westküste meiden bei starkem Wind, Klippenränder meiden."
             }

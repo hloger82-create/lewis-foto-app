@@ -2,7 +2,11 @@
     android:width="48dp" android:height="48dp"
     android:viewportWidth="48" android:viewportHeight="48">
     <path android:fillColor="#FFFFFF"
-        android:pathData="M6,28 C10,20 22,16 32,18 L40,12 L38,20 C42,22 42,26 38,28 L40,34 L34,30 C26,34 14,34 6,28 Z M20,12 C20,8 23,6 24,6 C24,9 22,11 20,12 Z"/>
+        android:pathData="M5,29 C9,20 21,15.5 31,17.5 L40,11 L37.5,20 C42,22 42.5,26.5 38,29 L41,36 L34,31 C26,35.5 13,35 5,29 Z M19,13.5 C19,9 22,6.5 24,6 C24.5,9.5 22.5,12 19,13.5 Z"/>
     <path android:fillColor="#0B3D4A"
-        android:pathData="M31.5,23 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0 Z"/>
+        android:pathData="M31.8,23.5 a1.6,1.6 0 1,0 3.2,0 a1.6,1.6 0 1,0 -3.2,0 Z"/>
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M8,27 C11,26 14,26 16,27 L15,29 C12,28.5 10,28.5 8,29 Z"/>
+    <path android:fillColor="#BFE3F0"
+        android:pathData="M20,4 C22,4 24,5.5 24.5,7 C22.5,7 20.5,6 20,4 Z M26,5 C28,5 29.5,6.5 30,8 C28,8 26.5,7 26,5 Z"/>
 </vector>

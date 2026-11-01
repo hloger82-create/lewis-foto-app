@@ -226,8 +226,8 @@ fun HomeScreen(
     }
 }
 
-private val TILE_A = Color(0xE6222E3A)   // tiefes Blau-Grau
-private val TILE_B = Color(0xE62E4A3A)   // warmes Moosgruen
+private val TILE_A = Color(0xCC5B7A99)   // helles entsättigtes Blaugrau
+private val TILE_B = Color(0xCC8FA876)   // helles entsättigtes Olivgruen
 
 @Composable
 private fun MotifTile(motif: Motif, alt: Boolean, onClick: () -> Unit) {
@@ -243,18 +243,19 @@ private fun MotifTile(motif: Motif, alt: Boolean, onClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp),
+                .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            MotifIcon(motif = motif, size = 20)
+            MotifIcon(motif = motif, size = 30)
             Text(
                 text = motif.labelDe,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
             )
         }
     }
