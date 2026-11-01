@@ -208,22 +208,27 @@ fun MapScreen(
             }
             mapView.overlays.add(m)
         }
-        // Pick-Mode: Long-Tap setzt Punkt
-        if (pickMode && onPick != null) {
-            val tap = object : org.osmdroid.views.overlay.Overlay() {
-                override fun onLongPress(e: android.view.MotionEvent?, mapView: MapView?): Boolean {
-                    if (mapView != null) {
-                        val p = mapView.projection.fromPixels(e!!.x.toInt(), e.y.toInt()) as GeoPoint
-                        onPick(p.latitude, p.longitude)
-                        return true
-                    }
-                    return false
-                }
-            }
-            mapView.overlays.add(tap)
-        }
         mapView.invalidate()
         onDispose { mapView.overlays.removeAll { it is Marker } }
+    }
+
+    // Pick-Mode: Long-Tap setzt Punkt (einmalig registriert, onPick ueber State gehalten)
+    var pickCallback by remember { mutableStateOf(onPick) }
+    pickCallback = onPick
+    DisposableEffect(pickMode) {
+        val tap = object : org.osmdroid.views.overlay.Overlay() {
+            override fun onLongPress(e: android.view.MotionEvent?, mv: MapView?): Boolean {
+                val cb = pickCallback
+                if (pickMode && cb != null && mv != null && e != null) {
+                    val p = mv.projection.fromPixels(e.x.toInt(), e.y.toInt()) as GeoPoint
+                    cb(p.latitude, p.longitude)
+                    return true
+                }
+                return false
+            }
+        }
+        if (pickMode) mapView.overlays.add(tap)
+        onDispose { mapView.overlays.remove(tap) }
     }
 
     Scaffold(
