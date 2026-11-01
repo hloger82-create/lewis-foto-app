@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -68,8 +69,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.Path as ComposePath
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.drawPath
 import androidx.compose.ui.graphics.drawscope.drawCircle
@@ -164,7 +165,7 @@ fun MapScreen(
 
     // --- GPS-Position (nur wenn Permission erteilt) ---
     DisposableEffect(hasLocationPermission) {
-        if (!hasLocationPermission) { onDispose { androidx.compose.runtime.DisposableEffectResult { } }; return@DisposableEffect }
+        if (!hasLocationPermission) { onDispose { object : androidx.compose.runtime.DisposableEffectResult { override fun dispose() {} } }; return@DisposableEffect }
         val lm = context.getSystemService(android.content.Context.LOCATION_SERVICE) as android.location.LocationManager
         val cb = object : android.location.LocationListener {
             override fun onLocationChanged(loc: Location) {
@@ -448,28 +449,30 @@ fun MapScreen(
                         val w = size.width
                         val h = size.height
                         val rot = -headingDeg - mapView.mapOrientation
-                        rotate(rot, pivot = androidx.compose.ui.geometry.Offset(w/2, h/2)) {
-                            val needle = Path().apply {
-                                moveTo(w/2, 3f)
-                                lineTo(w/2 + 5f, h/2)
-                                lineTo(w/2, h - 3f)
-                                lineTo(w/2 - 5f, h/2)
+                        rotate(rot, pivot = androidx.compose.ui.geometry.Offset(w/2f, h/2f)) {
+                            val needle = ComposePath().apply {
+                                moveTo(w/2f, 3f)
+                                lineTo(w/2f + 5f, h/2f)
+                                lineTo(w/2f, h - 3f)
+                                lineTo(w/2f - 5f, h/2f)
                                 close()
                             }
-                            drawPath(needle, brush = androidx.compose.ui.graphics.SolidColor(Color(0xFFDC2626)))
+                            drawPath(needle, brush = SolidColor(Color(0xFFDC2626)))
                         }
                         drawCircle(color = Color(0xFF374151), radius = 2.5f)
-                        // "N" oben, gegen die Nadel-Rotation korrigiert
-                        drawContext.canvas.nativeCanvas.save()
-                        drawContext.canvas.nativeCanvas.rotate(-rot, w/2, 9f)
-                        val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                            color = android.graphics.Color.parseColor("#111827")
-                            textSize = 9f
-                            textAlign = Paint.Align.CENTER
-                            typeface = android.graphics.Typeface.DEFAULT_BOLD
+                        rotate(-rot, pivot = androidx.compose.ui.geometry.Offset(w/2f, h/2f)) {
+                            drawContext.canvas.nativeCanvas.drawText(
+                                "N",
+                                w/2f,
+                                9f,
+                                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                                    color = android.graphics.Color.parseColor("#111827")
+                                    textSize = 9f
+                                    textAlign = Paint.Align.CENTER
+                                    typeface = android.graphics.Typeface.DEFAULT_BOLD
+                                }
+                            )
                         }
-                        drawContext.canvas.nativeCanvas.drawText("N", w/2, 9f, p)
-                        drawContext.canvas.nativeCanvas.restore()
                     }
                 }
 
@@ -546,7 +549,7 @@ private fun coloredPin(context: android.content.Context, motif: Motif, scale: Fl
     val tipY = sizePx * 0.97f
     val motifColor = Color(motif.colorHex).toArgb()
     paint.color = motifColor
-    val pinPath = Path().apply {
+    val pinPath = android.graphics.Path().apply {
         moveTo(cx - headR, headCy)
         arcTo(RectF(cx - headR, headCy - headR, cx + headR, headCy + headR), 180f, 180f)
         lineTo(cx, tipY)
