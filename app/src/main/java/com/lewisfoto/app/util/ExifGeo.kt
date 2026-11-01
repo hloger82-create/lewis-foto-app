@@ -17,10 +17,10 @@ object ExifGeo {
                 FileOutputStream(tmp).use { out -> input.copyTo(out) }
             } ?: return@runCatching null
             val exif = ExifInterface(tmp.absolutePath)
-            val out = DoubleArray(2)
+            val out = FloatArray(2)
             val ok = exif.getLatLong(out)
             tmp.delete()
-            if (ok) out[0] to out[1] else null
+            if (ok) out[0].toDouble() to out[1].toDouble() else null
         }.getOrNull()
     }
 
