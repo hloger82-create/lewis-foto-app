@@ -163,7 +163,7 @@ fun MapScreen(
 
     // --- GPS-Position (nur wenn Permission erteilt) ---
     DisposableEffect(hasLocationPermission) {
-        if (!hasLocationPermission) { onDispose { androidx.compose.runtime.DisposableEffectResult { } }; return@DisposableEffect }
+        if (!hasLocationPermission) { onDispose { object : androidx.compose.runtime.DisposableEffectResult { override fun dispose() {} } }; return@DisposableEffect }
         val lm = context.getSystemService(android.content.Context.LOCATION_SERVICE) as android.location.LocationManager
         val cb = object : android.location.LocationListener {
             override fun onLocationChanged(loc: Location) {
@@ -308,7 +308,7 @@ fun MapScreen(
                 title = "Meine Position"
                 val d = (26 * context.resources.displayMetrics.density).toInt()
                 val bmp = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888)
-                val c = Canvas(bmp)
+                val c = AndroidCanvas(bmp)
                 val pt = Paint(Paint.ANTI_ALIAS_FLAG)
                 pt.color = android.graphics.Color.parseColor("#2563EB")
                 c.drawCircle(d/2f, d/2f, d/2f - 2f, pt)
@@ -460,13 +460,11 @@ fun MapScreen(
                         drawCircle(color = Color(0xFF374151), radius = 2.5f)
                         rotate(-rot, pivot = androidx.compose.ui.geometry.Offset(w/2f, h/2f)) {
                             drawContext.canvas.nativeCanvas.drawText(
-                                "N",
-                                w/2f,
-                                9f,
-                                Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                                "N", w/2f, 9f,
+                                android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
                                     color = android.graphics.Color.parseColor("#111827")
                                     textSize = 9f
-                                    textAlign = Paint.Align.CENTER
+                                    textAlign = android.graphics.Paint.Align.CENTER
                                     typeface = android.graphics.Typeface.DEFAULT_BOLD
                                 }
                             )
