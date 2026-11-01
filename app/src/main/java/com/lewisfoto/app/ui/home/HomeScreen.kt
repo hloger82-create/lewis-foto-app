@@ -299,7 +299,7 @@ private fun AddSpotTile(alt: Boolean, onClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Icon(
-                imageVector = androidx.compose.material.icons.Icons.Filled.AddLocationAlt,
+                imageVector = androidx.compose.material.icons.Icons.Filled.Place,
                 contentDescription = null,
                 tint = Color.White,
                 modifier = Modifier.size(30.dp)
