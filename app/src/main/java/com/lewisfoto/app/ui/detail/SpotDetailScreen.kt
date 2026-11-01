@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.SafetyDivider
 import androidx.compose.material.icons.filled.TipsAndUpdates
@@ -53,6 +54,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lewisfoto.app.data.FotoSpot
+import com.lewisfoto.app.data.PhotoTips
 import com.lewisfoto.app.ui.components.CoordPickerDialog
 import com.lewisfoto.app.ui.components.MotifDot
 import com.lewisfoto.app.ui.components.ProbabilityBadge
@@ -216,6 +218,14 @@ fun SpotDetailScreen(
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         spot.tips.forEach { tip ->
                             Text(text = "• $tip", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                }
+
+                ExpandableSectionCard(title = "Foto-Technik – Profitipps", icon = Icons.Filled.PhotoCamera) {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        PhotoTips.forMotif(spot.motif).forEach { tip ->
+                            Text(text = "• $tip", style = MaterialTheme.typography.bodySmall)
                         }
                     }
                 }
