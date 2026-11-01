@@ -76,6 +76,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -163,7 +164,7 @@ fun MapScreen(
 
     // --- GPS-Position (nur wenn Permission erteilt) ---
     DisposableEffect(hasLocationPermission) {
-        if (!hasLocationPermission) { onDispose { }; return@DisposableEffect }
+        if (!hasLocationPermission) return@DisposableEffect
         val lm = context.getSystemService(android.content.Context.LOCATION_SERVICE) as android.location.LocationManager
         val cb = object : android.location.LocationListener {
             override fun onLocationChanged(loc: Location) {
@@ -446,7 +447,7 @@ fun MapScreen(
                     Box(modifier = Modifier.size(24.dp)) {
                         val rot = -headingDeg - mapView.mapOrientation
                         Canvas(modifier = Modifier.matchParentSize()) {
-                            rotate(rot, pivot = androidx.compose.ui.geometry.Offset(size.width/2f, size.height/2f)) {
+                            this.rotate(rot, pivot = androidx.compose.ui.geometry.Offset(size.width/2f, size.height/2f)) {
                                 val needle = ComposePath().apply {
                                     moveTo(size.width/2f, 3f)
                                     lineTo(size.width/2f + 5f, size.height/2f)
