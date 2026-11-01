@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -417,9 +418,14 @@ private fun SpotListItem(
     season: com.lewisfoto.app.data.Season,
     onClick: () -> Unit
 ) {
+    val isUser = spot.id.startsWith("user_")
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .then(
+                if (isUser) Modifier.border(1.5.dp, Color(0xFFE9762B), RoundedCornerShape(10.dp))
+                else Modifier
+            )
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -440,9 +446,9 @@ private fun SpotListItem(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "${spot.motif.labelDe} · ${spot.parking.name}",
+                    text = if (isUser) "${spot.motif.labelDe} · Userspot" else "${spot.motif.labelDe} · ${spot.parking.name}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = if (isUser) Color(0xFFE9762B) else MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
