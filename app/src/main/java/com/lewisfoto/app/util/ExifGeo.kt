@@ -14,12 +14,13 @@ object ExifGeo {
         runCatching {
             val tmp = File.createTempFile("exif", ".jpg", context.cacheDir)
             context.contentResolver.openInputStream(uri)?.use { input ->
-                FileOutputStream(tmp).use { input.copyTo(it) }
+                FileOutputStream(tmp).use { out -> input.copyTo(out) }
             } ?: return@runCatching null
             val exif = ExifInterface(tmp.absolutePath)
-            val latLon = exif.latLongToDouble()
+            val out = DoubleArray(2)
+            val ok = exif.getLatLong(out)
             tmp.delete()
-            latLon?.let { it[0] to it[1] }
+            if (ok) out[0] to out[1] else null
         }.getOrNull()
     }
 
@@ -27,7 +28,7 @@ object ExifGeo {
         runCatching {
             val target = File(context.filesDir, "userphoto_$id.jpg")
             context.contentResolver.openInputStream(uri)?.use { input ->
-                FileOutputStream(target).use { input.copyTo(it) }
+                FileOutputStream(target).use { out -> input.copyTo(out) }
             } ?: return@runCatching null
             target.absolutePath
         }.getOrNull()
