@@ -203,12 +203,15 @@ fun MapScreen(
             TopAppBar(
                 modifier = Modifier.height(56.dp),
                 title = {
-                    Text(
-                        if (activeFilter != null) "Karte · ${activeFilter!!.labelDe}" else "Fotospots-Karte",
-                        style = MaterialTheme.typography.titleMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            if (activeFilter != null) "Karte · ${activeFilter!!.labelDe}" else "Fotospots-Karte",
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+                    }
                 },
                 actions = {
                     IconToggleButton(checked = radarOn, onCheckedChange = { radarOn = it }) {
