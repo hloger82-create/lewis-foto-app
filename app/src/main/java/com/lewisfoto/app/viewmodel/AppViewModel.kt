@@ -98,5 +98,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun allSpotsForMap() = SpotRepository.allSpots
 
+    fun userSpotById(id: String): UserSpot? = userSpots.value.firstOrNull { it.id == id }
+
     fun reloadUserSpots() { /* StateFlow aktualisiert sich ueber DataStore automatisch */ }
 }

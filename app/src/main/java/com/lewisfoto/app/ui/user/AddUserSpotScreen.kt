@@ -26,6 +26,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.lewisfoto.app.data.Motif
 import com.lewisfoto.app.util.ExifGeo
 import com.lewisfoto.app.util.ReverseGeocode
+import com.lewisfoto.app.util.ResearchService
 import com.lewisfoto.app.util.UserSpotStore
 import com.lewisfoto.app.viewmodel.AppViewModel
 import kotlinx.coroutines.launch
@@ -68,6 +71,8 @@ fun AddUserSpotScreen(
     var suggestion by remember { mutableStateOf("") }
     var status by remember { mutableStateOf<String?>(null) }
     var saving by remember { mutableStateOf(false) }
+    var askResearch by remember { mutableStateOf(false) }
+    var researchSpot by remember { mutableStateOf<com.lewisfoto.app.data.UserSpot?>(null) }
 
     val photoPicker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
@@ -93,6 +98,38 @@ fun AddUserSpotScreen(
                 .minByOrNull { d2(it.lat, it.lon, la, lo) }
             suggestion = nearest?.let { "N\u00e4chster bekannter Spot: ${it.name} (${"%.1f".format(d2(it.lat, it.lon, la, lo))} km)" } ?: ""
         }
+    }
+
+    if (askResearch && researchSpot != null) {
+        AlertDialog(
+            onDismissRequest = { askResearch = false; onDone() },
+            title = { Text("Zusatzinfos suchen?") },
+            text = { Text("Soll die App im Internet nach Informationen zu dieser Location suchen (Ortsangabe, Parkm\u00f6glichkeiten, nahegelegene Highlights, beste Zeit, Sicherheitstipps)?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    val spot = researchSpot!!
+                    askResearch = false
+                    scope.launch {
+                        saving = true
+                        val r = ResearchService.research(spot.lat, spot.lon, spot.motif.labelDe, spot.suggestedSpot)
+                        UserSpotStore.update(ctx, spot.copy(
+                            osmInfo = r.osmInfo.ifBlank { spot.osmInfo },
+                            bestTimeOfDay = r.bestTimeOfDay,
+                            tips = r.tips,
+                            safety = r.safety,
+                            parkingName = r.parkingName,
+                            parkingNote = r.parkingNote,
+                            researched = true
+                        ))
+                        saving = false
+                        onDone()
+                    }
+                }) { Text("Ja, suchen") }
+            },
+            dismissButton = {
+                TextButton(onClick = { askResearch = false; onDone() }) { Text("Nein, sp\u00e4ter") }
+            }
+        )
     }
 
     Scaffold(
@@ -188,7 +225,7 @@ fun AddUserSpotScreen(
                             val photoPath = photoUri?.let { ExifGeo.copyPhoto(ctx, it, id) }
                             val la = lat!!; val lo = lon!!
                             if (osmInfo.isBlank()) osmInfo = ReverseGeocode.describe(la, lo)
-                            UserSpotStore.add(ctx, com.lewisfoto.app.data.UserSpot(
+                            val spot = com.lewisfoto.app.data.UserSpot(
                                 id = id,
                                 name = name.trim(),
                                 motif = motif ?: Motif.OTHER,
@@ -198,10 +235,11 @@ fun AddUserSpotScreen(
                                 osmInfo = osmInfo,
                                 suggestedSpot = suggestion,
                                 createdAt = System.currentTimeMillis()
-                            ))
-                            viewModel.reloadUserSpots()
+                            )
+                            UserSpotStore.add(ctx, spot)
                             saving = false
-                            onDone()
+                            askResearch = true
+                            researchSpot = spot
                         }
                     }
                 ) { Text(if (saving) "Speichern\u2026" else "Speichern") }

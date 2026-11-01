@@ -47,6 +47,7 @@ import com.lewisfoto.app.ui.sightings.SightingsScreen
 import com.lewisfoto.app.ui.sources.SourcesScreen
 import com.lewisfoto.app.ui.theme.LewisFotoTheme
 import com.lewisfoto.app.ui.user.AddUserSpotScreen
+import com.lewisfoto.app.ui.detail.UserSpotDetailScreen
 import com.lewisfoto.app.ui.weather.WeatherScreen
 import com.lewisfoto.app.viewmodel.AppViewModel
 import org.osmdroid.config.Configuration
@@ -189,6 +190,15 @@ fun LewisFotoNav(viewModel: AppViewModel) {
             }
             composable("settings") {
                 SettingsScreen(viewModel = viewModel)
+            }
+            composable(
+                route = "userdetail/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ) { entry ->
+                val us = viewModel.userSpotById(entry.arguments?.getString("id").orEmpty())
+                if (us != null) {
+                    UserSpotDetailScreen(viewModel = viewModel, spot = us, onBack = { navController.popBackStack() })
+                } else navController.popBackStack()
             }
             composable("pickmap") {
                 MapScreen(

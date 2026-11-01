@@ -103,7 +103,8 @@ fun MapScreen(
     onSpotClick: (FotoSpot) -> Unit,
     onBack: () -> Unit,
     pickMode: Boolean = false,
-    onPick: ((Double, Double) -> Unit)? = null
+    onPick: ((Double, Double) -> Unit)? = null,
+    onUserSpotClick: (com.lewisfoto.app.data.UserSpot) -> Unit = {}
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -205,6 +206,10 @@ fun MapScreen(
                 snippet = "Eigene Location \u00b7 ${us.motif.labelDe}"
                 icon = coloredPin(context, us.motif, if (zoomBig) 2f else 1f)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                setOnMarkerClickListener { _, _ ->
+                    onUserSpotClick(us)
+                    true
+                }
             }
             mapView.overlays.add(m)
         }
