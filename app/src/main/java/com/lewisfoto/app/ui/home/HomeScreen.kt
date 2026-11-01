@@ -118,61 +118,57 @@ fun HomeScreen(
                         )
                     )
             ) {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color(0x40000000))
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                contentAlignment = Alignment.TopStart
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
-                Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
                         text = "Natur- & Wildlife-Fotografie",
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
                     )
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clickable { showDatePicker = true }
+                            .background(Color(0x55FFFFFF), RoundedCornerShape(999.dp))
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
-                        Text(
-                            text = "Lewis & Harris, Äußere Hebriden",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFFDCEFF3),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
+                        Icon(
+                            Icons.Filled.CalendarMonth,
+                            contentDescription = "Reisedatum ändern",
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
                         )
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .clickable { showDatePicker = true }
-                                .background(Color(0x55FFFFFF), RoundedCornerShape(999.dp))
-                                .padding(horizontal = 10.dp, vertical = 4.dp)
-                        ) {
-                            Icon(
-                                Icons.Filled.CalendarMonth,
-                                contentDescription = "Reisedatum",
-                                tint = Color.White,
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Text(
-                                text = " ${tripDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMAN))} · ${season.labelDe}",
-                                color = Color.White,
-                                style = MaterialTheme.typography.labelSmall,
-                                fontWeight = FontWeight.SemiBold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
+                        Text(
+                            text = " ${tripDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMAN))} · ${season.labelDe}",
+                            color = Color.White,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
+                Text(
+                    text = "Lewis & Harris · Äußere Hebriden",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFFDCEFF3),
+                    modifier = Modifier.padding(top = 2.dp)
+                )
             }
 
             Column(
@@ -188,7 +184,7 @@ fun HomeScreen(
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
-                notes.take(4).forEach { note ->
+                notes.take(3).forEach { note ->
                     Text(
                         text = "• $note",
                         style = MaterialTheme.typography.bodySmall,
@@ -218,7 +214,7 @@ fun HomeScreen(
                     .weight(1f)
             ) {
                 itemsIndexed(viewModel.motifs) { index, motif ->
-                    MotifTile(motif = motif, alt = index % 2 == 1, onClick = { onMotifClick(motif) })
+                    MotifTile(motif = motif, alt = (index / 2 + index) % 2 == 1, onClick = { onMotifClick(motif) })
                 }
             }
             }
