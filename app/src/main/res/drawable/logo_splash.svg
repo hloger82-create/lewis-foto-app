@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Lewis &amp; Harris Wildlife Photography</title>
+  <circle cx="256" cy="256" r="250" fill="#12332C"/>
+  <circle cx="256" cy="256" r="216" fill="#F1E7C8"/>
+  <defs>
+    <clipPath id="frame-clip"><circle cx="256" cy="256" r="216"/></clipPath>
+  </defs>
+  <g clip-path="url(#frame-clip)">
+    <circle cx="256" cy="221.4" r="55.3" fill="#E9762B"/>
+    <polygon points="30,307.8 126.4,230.1 195.5,290.6 277.6,195.5 359.7,281.9 437.4,243.0 482,299.2 482,482 30,482" fill="#9AA25B"/>
+    <polygon points="30,342.4 100.5,277.6 169.6,325.1 264.6,243.0 351,316.5 420.2,273.3 482,333.8 482,482 30,482" fill="#1E463B"/>
+    <polygon points="30,377 482,377 482,482 30,482" fill="#0E2A24"/>
+    <rect x="143.7" y="397.7" width="121" height="10.4" rx="5.2" fill="#C7B87A"/>
+    <rect x="247.4" y="423.6" width="138.2" height="10.4" rx="5.2" fill="#C7B87A"/>
+    <rect x="109.1" y="447.4" width="95" height="10.4" rx="5.2" fill="#C7B87A"/>
+  </g>
+</svg>
