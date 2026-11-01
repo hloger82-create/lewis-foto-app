@@ -1,7 +1,7 @@
 package com.lewisfoto.app.ui.map
 
 import android.graphics.Bitmap
-import android.graphics.Canvas
+import android.graphics.Canvas as AndroidCanvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -71,9 +72,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.Path as ComposePath
-import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.graphics.drawscope.drawPath
-import androidx.compose.ui.graphics.drawscope.drawCircle
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -165,7 +163,7 @@ fun MapScreen(
 
     // --- GPS-Position (nur wenn Permission erteilt) ---
     DisposableEffect(hasLocationPermission) {
-        if (!hasLocationPermission) { onDispose { object : androidx.compose.runtime.DisposableEffectResult { override fun dispose() {} } }; return@DisposableEffect }
+        if (!hasLocationPermission) { onDispose { androidx.compose.runtime.DisposableEffectResult { } }; return@DisposableEffect }
         val lm = context.getSystemService(android.content.Context.LOCATION_SERVICE) as android.location.LocationManager
         val cb = object : android.location.LocationListener {
             override fun onLocationChanged(loc: Location) {
@@ -541,7 +539,7 @@ private fun coloredPin(context: android.content.Context, motif: Motif, scale: Fl
     val density = context.resources.displayMetrics.density
     val sizePx = (40 * scale * density).toInt()
     val bmp = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bmp)
+    val canvas = AndroidCanvas(bmp)
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     val cx = sizePx / 2f
     val headR = sizePx * 0.30f
