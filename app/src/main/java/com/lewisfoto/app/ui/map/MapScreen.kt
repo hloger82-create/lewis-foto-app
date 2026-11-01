@@ -163,7 +163,7 @@ fun MapScreen(
 
     // --- GPS-Position (nur wenn Permission erteilt) ---
     DisposableEffect(hasLocationPermission) {
-        if (!hasLocationPermission) { onDispose { object : androidx.compose.runtime.DisposableEffectResult { override fun dispose() {} } }; return@DisposableEffect }
+        if (!hasLocationPermission) { onDispose { }; return@DisposableEffect }
         val lm = context.getSystemService(android.content.Context.LOCATION_SERVICE) as android.location.LocationManager
         val cb = object : android.location.LocationListener {
             override fun onLocationChanged(loc: Location) {
@@ -443,32 +443,28 @@ fun MapScreen(
                         .size(44.dp),
                     containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
                 ) {
-                    Canvas(modifier = Modifier.size(24.dp)) {
-                        val w = size.width
-                        val h = size.height
+                    Box(modifier = Modifier.size(24.dp)) {
                         val rot = -headingDeg - mapView.mapOrientation
-                        rotate(rot, pivot = androidx.compose.ui.geometry.Offset(w/2f, h/2f)) {
-                            val needle = ComposePath().apply {
-                                moveTo(w/2f, 3f)
-                                lineTo(w/2f + 5f, h/2f)
-                                lineTo(w/2f, h - 3f)
-                                lineTo(w/2f - 5f, h/2f)
-                                close()
-                            }
-                            drawPath(needle, brush = SolidColor(Color(0xFFDC2626)))
-                        }
-                        drawCircle(color = Color(0xFF374151), radius = 2.5f)
-                        rotate(-rot, pivot = androidx.compose.ui.geometry.Offset(w/2f, h/2f)) {
-                            drawContext.canvas.nativeCanvas.drawText(
-                                "N", w/2f, 9f,
-                                android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
-                                    color = android.graphics.Color.parseColor("#111827")
-                                    textSize = 9f
-                                    textAlign = android.graphics.Paint.Align.CENTER
-                                    typeface = android.graphics.Typeface.DEFAULT_BOLD
+                        Canvas(modifier = Modifier.matchParentSize()) {
+                            rotate(rot, pivot = androidx.compose.ui.geometry.Offset(size.width/2f, size.height/2f)) {
+                                val needle = ComposePath().apply {
+                                    moveTo(size.width/2f, 3f)
+                                    lineTo(size.width/2f + 5f, size.height/2f)
+                                    lineTo(size.width/2f, size.height - 3f)
+                                    lineTo(size.width/2f - 5f, size.height/2f)
+                                    close()
                                 }
-                            )
+                                drawPath(needle, brush = SolidColor(Color(0xFFDC2626)))
+                            }
+                            drawCircle(color = Color(0xFF374151), radius = 2.5f)
                         }
+                        Text(
+                            text = "N",
+                            color = Color(0xFF111827),
+                            fontSize = 9.sp,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            modifier = Modifier.align(Alignment.TopCenter)
+                        )
                     }
                 }
 
