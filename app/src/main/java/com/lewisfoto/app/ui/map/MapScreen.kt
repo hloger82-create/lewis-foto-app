@@ -68,6 +68,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.drawPath
+import androidx.compose.ui.graphics.drawscope.drawCircle
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -159,7 +164,7 @@ fun MapScreen(
 
     // --- GPS-Position (nur wenn Permission erteilt) ---
     DisposableEffect(hasLocationPermission) {
-        if (!hasLocationPermission) { onDispose { }; return@DisposableEffect }
+        if (!hasLocationPermission) { onDispose { androidx.compose.runtime.DisposableEffectResult { } }; return@DisposableEffect }
         val lm = context.getSystemService(android.content.Context.LOCATION_SERVICE) as android.location.LocationManager
         val cb = object : android.location.LocationListener {
             override fun onLocationChanged(loc: Location) {
@@ -440,31 +445,31 @@ fun MapScreen(
                     containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
                 ) {
                     Canvas(modifier = Modifier.size(24.dp)) {
+                        val w = size.width
+                        val h = size.height
                         val rot = -headingDeg - mapView.mapOrientation
-                        rotate(rot) {
-                            val path = Path().apply {
-                                moveTo(size.width/2, 2f)
-                                lineTo(size.width/2 + 5f, size.height/2)
-                                lineTo(size.width/2, size.height - 2f)
-                                lineTo(size.width/2 - 5f, size.height/2)
+                        rotate(rot, pivot = androidx.compose.ui.geometry.Offset(w/2, h/2)) {
+                            val needle = Path().apply {
+                                moveTo(w/2, 3f)
+                                lineTo(w/2 + 5f, h/2)
+                                lineTo(w/2, h - 3f)
+                                lineTo(w/2 - 5f, h/2)
                                 close()
                             }
-                            drawPath(path, androidx.compose.ui.graphics.SolidColor(Color(0xFFDC2626)))
+                            drawPath(needle, brush = androidx.compose.ui.graphics.SolidColor(Color(0xFFDC2626)))
                         }
-                        drawCircle(Color(0xFF374151), radius = 2.5f)
-                        // "N"-Markierung oben
-                        drawContext.canvas.nativeCanvas.apply {
-                            val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                                color = android.graphics.Color.parseColor("#111827")
-                                textSize = 9f * density / 2.4f
-                                textAlign = Paint.Align.CENTER
-                                typeface = android.graphics.Typeface.DEFAULT_BOLD
-                            }
-                            save()
-                            rotate(-rot, size.width/2, 9f)
-                            drawText("N", size.width/2, 9f, p)
-                            restore()
+                        drawCircle(color = Color(0xFF374151), radius = 2.5f)
+                        // "N" oben, gegen die Nadel-Rotation korrigiert
+                        drawContext.canvas.nativeCanvas.save()
+                        drawContext.canvas.nativeCanvas.rotate(-rot, w/2, 9f)
+                        val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                            color = android.graphics.Color.parseColor("#111827")
+                            textSize = 9f
+                            textAlign = Paint.Align.CENTER
+                            typeface = android.graphics.Typeface.DEFAULT_BOLD
                         }
+                        drawContext.canvas.nativeCanvas.drawText("N", w/2, 9f, p)
+                        drawContext.canvas.nativeCanvas.restore()
                     }
                 }
 
