@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lewisfoto.app.data.PhotoTips
 import com.lewisfoto.app.data.UserSpot
 import com.lewisfoto.app.ui.components.MotifDot
 import com.lewisfoto.app.util.UserSpotStore
@@ -118,6 +119,10 @@ fun UserSpotDetailScreen(
 
             DetailCard(title = "Beste Zeit") {
                 Text(spot.bestTimeOfDay.ifBlank { "Keine Angabe \u2013 motivabh\u00e4ngig w\u00e4hlen (z. B. D\u00e4mmerung)." }, style = MaterialTheme.typography.bodyMedium)
+            }
+
+            DetailCard(title = "Foto-Technik – Profitipps") {
+                PhotoTips.forMotif(spot.motif).forEach { Text("• $it", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 2.dp)) }
             }
 
             DetailCard(title = "Tipps zur Location") {
