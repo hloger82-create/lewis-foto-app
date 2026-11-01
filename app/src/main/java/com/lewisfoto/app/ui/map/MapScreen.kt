@@ -6,7 +6,17 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.location.Location
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat as CoreCompat2
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.foundation.background
@@ -30,6 +40,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.CloudQueue
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.Card
@@ -115,6 +126,57 @@ fun MapScreen(
     var radarOn by remember { mutableStateOf(false) }
     var zoomBig by remember { mutableStateOf(false) }
     var radarFrames by remember { mutableStateOf<Pair<String, List<String>>?>(null) }
+    var headingDeg by remember { mutableStateOf(0f) }
+    var myLocation by remember { mutableStateOf<GeoPoint?>(null) }
+    var hasLocationPermission by remember {
+        mutableStateOf(
+            CoreCompat2.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    val permLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+        hasLocationPermission = result[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+            result[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+    }
+
+
+    DisposableEffect(Unit) {
+        val sm = context.getSystemService(android.content.Context.SENSOR_SERVICE) as SensorManager
+        val listener = object : SensorEventListener {
+            override fun onSensorChanged(e: SensorEvent) {
+                if (e.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
+                    val r = FloatArray(9); val o = FloatArray(3)
+                    SensorManager.getRotationMatrixFromVector(r, e.values)
+                    SensorManager.getOrientation(r, o)
+                    headingDeg = Math.toDegrees(o[0].toDouble()).toFloat()
+                }
+            }
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+        }
+        val rot = sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+        if (rot != null) sm.registerListener(listener, rot, SensorManager.SENSOR_DELAY_UI)
+        onDispose { sm.unregisterListener(listener) }
+    }
+
+    // --- GPS-Position (nur wenn Permission erteilt) ---
+    DisposableEffect(hasLocationPermission) {
+        if (!hasLocationPermission) { onDispose { }; return@DisposableEffect }
+        val lm = context.getSystemService(android.content.Context.LOCATION_SERVICE) as android.location.LocationManager
+        val cb = object : android.location.LocationListener {
+            override fun onLocationChanged(loc: Location) {
+                myLocation = GeoPoint(loc.latitude, loc.longitude)
+            }
+        }
+        try {
+            if (lm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER))
+                lm.requestLocationUpdates(android.location.LocationManager.GPS_PROVIDER, 5000L, 5f, cb)
+            if (lm.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER))
+                lm.requestLocationUpdates(android.location.LocationManager.NETWORK_PROVIDER, 5000L, 5f, cb)
+            val last = lm.getLastKnownLocation(android.location.LocationManager.GPS_PROVIDER)
+                ?: lm.getLastKnownLocation(android.location.LocationManager.NETWORK_PROVIDER)
+            if (last != null) myLocation = GeoPoint(last.latitude, last.longitude)
+        } catch (_: SecurityException) {}
+        onDispose { try { lm.removeUpdates(cb) } catch (_: Exception) {} }
+    }
 
     LaunchedEffect(radarOn) {
         if (radarOn && radarFrames == null) {
@@ -202,7 +264,7 @@ fun MapScreen(
         }
     }
 
-    DisposableEffect(visibleSpots, customCoords, zoomBig, userSpots, pickMode) {
+    DisposableEffect(visibleSpots, customCoords, zoomBig, userSpots, pickMode, myLocation) {
         mapView.overlays.removeAll { it is Marker }
         visibleSpots.forEach { spot ->
             val marker = Marker(mapView).apply {
@@ -234,6 +296,24 @@ fun MapScreen(
                 }
             }
             mapView.overlays.add(m)
+        }
+        // Eigene Position als blauer Punkt
+        myLocation?.let { ml ->
+            val me = Marker(mapView).apply {
+                position = ml
+                title = "Meine Position"
+                val d = (26 * context.resources.displayMetrics.density).toInt()
+                val bmp = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888)
+                val c = Canvas(bmp)
+                val pt = Paint(Paint.ANTI_ALIAS_FLAG)
+                pt.color = android.graphics.Color.parseColor("#2563EB")
+                c.drawCircle(d/2f, d/2f, d/2f - 2f, pt)
+                pt.color = android.graphics.Color.WHITE
+                c.drawCircle(d/2f, d/2f, d/6f, pt)
+                icon = BitmapDrawable(context.resources, bmp)
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+            }
+            mapView.overlays.add(me)
         }
         mapView.invalidate()
         onDispose { mapView.overlays.removeAll { it is Marker } }
@@ -346,6 +426,75 @@ fun MapScreen(
                     .clip(RoundedCornerShape(8.dp))
             ) {
                 AndroidView(factory = { mapView }, modifier = Modifier.fillMaxSize())
+
+                // Kompass: zeigt Karten-Nord an, Tap richtet nach Norden aus
+                androidx.compose.material3.FloatingActionButton(
+                    onClick = {
+                        mapView.controller.animateTo(GeoPoint(mapView.mapCenter.latitude, mapView.mapCenter.longitude))
+                        mapView.setMapOrientation(0f)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(10.dp)
+                        .size(44.dp),
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                ) {
+                    Canvas(modifier = Modifier.size(24.dp)) {
+                        val rot = -headingDeg - mapView.mapOrientation
+                        rotate(rot) {
+                            val path = Path().apply {
+                                moveTo(size.width/2, 2f)
+                                lineTo(size.width/2 + 5f, size.height/2)
+                                lineTo(size.width/2, size.height - 2f)
+                                lineTo(size.width/2 - 5f, size.height/2)
+                                close()
+                            }
+                            drawPath(path, androidx.compose.ui.graphics.SolidColor(Color(0xFFDC2626)))
+                        }
+                        drawCircle(Color(0xFF374151), radius = 2.5f)
+                        // "N"-Markierung oben
+                        drawContext.canvas.nativeCanvas.apply {
+                            val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                                color = android.graphics.Color.parseColor("#111827")
+                                textSize = 9f * density / 2.4f
+                                textAlign = Paint.Align.CENTER
+                                typeface = android.graphics.Typeface.DEFAULT_BOLD
+                            }
+                            save()
+                            rotate(-rot, size.width/2, 9f)
+                            drawText("N", size.width/2, 9f, p)
+                            restore()
+                        }
+                    }
+                }
+
+                // My-Location-Button: zoomt zur eigenen Position
+                androidx.compose.material3.FloatingActionButton(
+                    onClick = {
+                        if (!hasLocationPermission) {
+                            permLauncher.launch(arrayOf(
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                            ))
+                        } else {
+                            myLocation?.let {
+                                mapView.controller.setZoom(16.0)
+                                mapView.controller.animateTo(it)
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(10.dp)
+                        .size(44.dp),
+                    containerColor = if (myLocation != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.MyLocation,
+                        contentDescription = "Zur eigenen Position",
+                        tint = if (myLocation != null) Color.White else MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
 
             if (visibleOrdered.isEmpty()) {

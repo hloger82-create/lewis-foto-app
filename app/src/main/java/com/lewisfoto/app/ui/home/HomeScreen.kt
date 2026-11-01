@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.item
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -234,7 +235,7 @@ fun HomeScreen(
                 itemsIndexed(viewModel.motifs) { index, motif ->
                     MotifTile(motif = motif, alt = (index / 2 + index) % 2 == 1, onClick = { onMotifClick(motif) })
                 }
-                item {
+                item(span = { GridItemSpan(maxLineSpan) }) {
                     AddSpotTile(onClick = { onMotifClick(com.lewisfoto.app.data.Motif.OTHER) })
                 }
             }
