@@ -46,6 +46,7 @@ import com.lewisfoto.app.ui.settings.SettingsScreen
 import com.lewisfoto.app.ui.sightings.SightingsScreen
 import com.lewisfoto.app.ui.sources.SourcesScreen
 import com.lewisfoto.app.ui.theme.LewisFotoTheme
+import com.lewisfoto.app.ui.user.AddUserSpotScreen
 import com.lewisfoto.app.ui.weather.WeatherScreen
 import com.lewisfoto.app.viewmodel.AppViewModel
 import org.osmdroid.config.Configuration
@@ -129,7 +130,10 @@ fun LewisFotoNav(viewModel: AppViewModel) {
             composable("home") {
                 HomeScreen(
                     viewModel = viewModel,
-                    onMotifClick = { motif -> navController.navigate("map/${motif.name}") }
+                    onMotifClick = { motif ->
+                        if (motif == Motif.OTHER) navController.navigate("pickmap")
+                        else navController.navigate("map/${motif.name}")
+                    }
                 )
             }
             composable("sightings") {
@@ -185,6 +189,23 @@ fun LewisFotoNav(viewModel: AppViewModel) {
             }
             composable("settings") {
                 SettingsScreen(viewModel = viewModel)
+            }
+            composable(
+                route = "addspot?lat={lat}&lon={lon}",
+                arguments = listOf(
+                    navArgument("lat") { type = NavType.StringType; defaultValue = "" },
+                    navArgument("lon") { type = NavType.StringType; defaultValue = "" }
+                )
+            ) { entry ->
+                val lat = entry.arguments?.getString("lat")?.toDoubleOrNull()
+                val lon = entry.arguments?.getString("lon")?.toDoubleOrNull()
+                AddUserSpotScreen(
+                    viewModel = viewModel,
+                    initialLat = lat,
+                    initialLon = lon,
+                    onDone = { navController.popBackStack() },
+                    onBack = { navController.popBackStack() }
+                )
             }
         }
     }

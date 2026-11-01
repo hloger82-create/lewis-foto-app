@@ -231,7 +231,11 @@ fun HomeScreen(
                     .weight(1f)
             ) {
                 itemsIndexed(viewModel.motifs) { index, motif ->
-                    MotifTile(motif = motif, alt = (index / 2 + index) % 2 == 1, onClick = { onMotifClick(motif) })
+                    if (motif == com.lewisfoto.app.data.Motif.OTHER) {
+                        AddSpotTile(alt = (index / 2 + index) % 2 == 1, onClick = { onMotifClick(motif) })
+                    } else {
+                        MotifTile(motif = motif, alt = (index / 2 + index) % 2 == 1, onClick = { onMotifClick(motif) })
+                    }
                 }
             }
             }
@@ -263,6 +267,45 @@ private fun MotifTile(motif: Motif, alt: Boolean, onClick: () -> Unit) {
             MotifIcon(motif = motif, size = 30)
             Text(
                 text = motif.labelDe,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun AddSpotTile(alt: Boolean, onClick: () -> Unit) {
+    androidx.compose.material3.Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(3.0f)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(14.dp),
+        colors = androidx.compose.material3.CardDefaults.cardColors(
+            containerColor = if (alt) Color(0x66D6E0C0) else Color(0x66B8CCDD)
+        ),
+        elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Icon(
+                imageVector = androidx.compose.material.icons.Icons.Filled.AddLocationAlt,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(30.dp)
+            )
+            Text(
+                text = "+ Eigene Location",
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold,

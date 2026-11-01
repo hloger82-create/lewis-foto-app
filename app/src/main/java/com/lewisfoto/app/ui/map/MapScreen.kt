@@ -101,12 +101,15 @@ fun MapScreen(
     viewModel: AppViewModel,
     motif: Motif?,
     onSpotClick: (FotoSpot) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    pickMode: Boolean = false,
+    onPick: ((Double, Double) -> Unit)? = null
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val tripSeason by viewModel.season.collectAsStateWithLifecycle()
     val customCoords by viewModel.customCoords.collectAsStateWithLifecycle()
+    val userSpots by viewModel.userSpots.collectAsStateWithLifecycle()
     var activeFilter by remember { mutableStateOf(motif) }
     var radarOn by remember { mutableStateOf(false) }
     var zoomBig by remember { mutableStateOf(false) }
@@ -176,7 +179,7 @@ fun MapScreen(
         }
     }
 
-    DisposableEffect(visibleSpots, customCoords, zoomBig) {
+    DisposableEffect(visibleSpots, customCoords, zoomBig, userSpots, pickMode) {
         mapView.overlays.removeAll { it is Marker }
         visibleSpots.forEach { spot ->
             val marker = Marker(mapView).apply {
@@ -193,6 +196,31 @@ fun MapScreen(
                 }
             }
             mapView.overlays.add(marker)
+        }
+        // Eigene Locations als goldene Stecknadel
+        if (!pickMode) userSpots.forEach { us ->
+            val m = Marker(mapView).apply {
+                position = GeoPoint(us.lat, us.lon)
+                title = us.name
+                snippet = "Eigene Location \u00b7 ${us.motif.labelDe}"
+                icon = coloredPin(context, us.motif, if (zoomBig) 2f else 1f)
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            }
+            mapView.overlays.add(m)
+        }
+        // Pick-Mode: Long-Tap setzt Punkt
+        if (pickMode && onPick != null) {
+            val tap = object : org.osmdroid.views.overlay.Overlay() {
+                override fun onLongPress(e: android.view.MotionEvent?, mapView: MapView?): Boolean {
+                    if (mapView != null) {
+                        val p = mapView.projection.fromPixels(e!!.x.toInt(), e.y.toInt()) as GeoPoint
+                        onPick(p.latitude, p.longitude)
+                        return true
+                    }
+                    return false
+                }
+            }
+            mapView.overlays.add(tap)
         }
         mapView.invalidate()
         onDispose { mapView.overlays.removeAll { it is Marker } }
@@ -214,6 +242,9 @@ fun MapScreen(
                     }
                 },
                 actions = {
+                    if (pickMode) {
+                        Text("Punkt auf der Karte antippen", color = Color.White, style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 8.dp))
+                    }
                     IconToggleButton(checked = radarOn, onCheckedChange = { radarOn = it }) {
                         Icon(
                             imageVector = if (radarOn) Icons.Filled.Cloud else Icons.Outlined.CloudOff,

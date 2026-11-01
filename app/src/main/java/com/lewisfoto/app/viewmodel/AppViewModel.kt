@@ -3,6 +3,8 @@ package com.lewisfoto.app.viewmodel
 import android.app.Application
 import android.graphics.Bitmap
 import com.lewisfoto.app.util.HomeBackground
+import com.lewisfoto.app.util.UserSpotStore
+import com.lewisfoto.app.data.UserSpot
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.lewisfoto.app.data.FotoSpot
@@ -90,4 +92,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         HomeBackground.clear(getApplication())
         _homeBg.value = null
     }
+
+    val userSpots: StateFlow<List<UserSpot>> = UserSpotStore.all(getApplication())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun allSpotsForMap() = SpotRepository.allSpots
+
+    fun reloadUserSpots() { /* StateFlow aktualisiert sich ueber DataStore automatisch */ }
 }
