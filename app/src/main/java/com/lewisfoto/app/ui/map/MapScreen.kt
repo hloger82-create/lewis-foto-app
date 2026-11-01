@@ -110,7 +110,6 @@ fun MapScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val tripSeason by viewModel.season.collectAsStateWithLifecycle()
     val customCoords by viewModel.customCoords.collectAsStateWithLifecycle()
-    val userSpots by viewModel.userSpots.collectAsStateWithLifecycle()
     var activeFilter by remember { mutableStateOf(motif) }
     var radarOn by remember { mutableStateOf(false) }
     var zoomBig by remember { mutableStateOf(false) }
@@ -123,9 +122,31 @@ fun MapScreen(
     }
 
     val allSpots = remember { viewModel.motifs.flatMap { viewModel.spotsForMotif(it) } }
-    val visibleSpots = remember(activeFilter) {
-        if (activeFilter == null) allSpots else allSpots.filter { it.motif == activeFilter }
+    val userSpots by viewModel.userSpots.collectAsStateWithLifecycle()
+    // eigene Spots als FotoSpot-Adapter, damit Filter-Chips + Liste sie mitzeigen
+    val userAsSpots = remember(userSpots) {
+        userSpots.map { us ->
+            com.lewisfoto.app.data.FotoSpot(
+                id = us.id,
+                name = us.name,
+                motif = us.motif,
+                lat = us.lat, lon = us.lon,
+                ratings = emptyList(),
+                bestTimeOfDay = us.bestTimeOfDay,
+                tide = null,
+                tips = us.tips,
+                safety = us.safety,
+                parking = com.lewisfoto.app.data.ParkingInfo(us.parkingName.ifBlank { "k. A." }, us.parkingNote),
+                sources = listOf("Eigene Location")
+            )
+        }
     }
+    val allSpotsWithUser = remember(allSpots, userAsSpots) { allSpots + userAsSpots }
+    val visibleSpots = remember(activeFilter, allSpotsWithUser) {
+        if (activeFilter == null) allSpotsWithUser else allSpotsWithUser.filter { it.motif == activeFilter }
+    }
+    // eigene Spots in der Liste oben halten
+    val visibleOrdered = remember(visibleSpots) { visibleSpots.sortedBy { if (it.id.startsWith("user_")) 0 else 1 } }
 
     val mapView = remember {
         MapView(context).apply {
@@ -326,7 +347,7 @@ fun MapScreen(
                 AndroidView(factory = { mapView }, modifier = Modifier.fillMaxSize())
             }
 
-            if (visibleSpots.isEmpty()) {
+            if (visibleOrdered.isEmpty()) {
                 Text(
                     text = "Keine Spots für diesen Filter.",
                     modifier = Modifier.padding(16.dp),
@@ -340,11 +361,16 @@ fun MapScreen(
                         .fillMaxWidth()
                         .weight(0.45f)
                 ) {
-                    items(visibleSpots, key = { it.id }) { spot ->
+                    items(visibleOrdered, key = { it.id }) { spot ->
                         SpotListItem(
                             spot = spot,
                             season = tripSeason,
-                            onClick = { onSpotClick(spot) }
+                            onClick = {
+                                if (spot.id.startsWith("user_")) {
+                                    val us = userSpots.firstOrNull { it.id == spot.id }
+                                    if (us != null) onUserSpotClick(us) else onSpotClick(spot)
+                                } else onSpotClick(spot)
+                            }
                         )
                     }
                 }

@@ -148,7 +148,8 @@ fun LewisFotoNav(viewModel: AppViewModel) {
                     viewModel = viewModel,
                     motif = null,
                     onSpotClick = { navController.navigate("detail/${it.id}") },
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
+                    onUserSpotClick = { navController.navigate("userdetail/${it.id}") }
                 )
             }
             composable(
@@ -160,7 +161,8 @@ fun LewisFotoNav(viewModel: AppViewModel) {
                     viewModel = viewModel,
                     motif = motif,
                     onSpotClick = { navController.navigate("detail/${it.id}") },
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
+                    onUserSpotClick = { navController.navigate("userdetail/${it.id}") }
                 )
             }
             composable(
