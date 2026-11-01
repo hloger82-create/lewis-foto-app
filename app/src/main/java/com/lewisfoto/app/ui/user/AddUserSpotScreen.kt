@@ -81,7 +81,7 @@ fun AddUserSpotScreen(
             val gps = ExifGeo.readGps(ctx, uri)
             if (gps != null) {
                 lat = gps.first; lon = gps.second
-                status = "GPS-Tag gefunden: ${"%.5f".format(gps.first)}, ${"%.5f".format(gps.second)}"
+                status = "GPS-Tag gefunden: ${"%.5f".format(gps.first)}, ${"%.5f".format(gps.second)} \u2013 \u00fcberschreibt die Kartenposition."
             } else {
                 status = "Foto hat keinen GPS-Tag \u2013 bitte Punkt auf der Karte w\u00e4hlen oder anderes Foto."
             }
@@ -210,6 +210,12 @@ fun AddUserSpotScreen(
                 OutlinedButton(onClick = {
                     photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 }) { Text(if (photoUri != null) "Foto gew\u00e4hlt \u2713" else "Foto mit Geo-Tag laden (optional)") }
+                Text(
+                    "Hinweis: Hat das Foto GPS-Geodaten, werden diese Koordinaten gespeichert \u2013 sie \u00fcberschreiben die auf der Karte gew\u00e4hlte Position.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
             }
             if (status != null) {
                 Text(status!!, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
