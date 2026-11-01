@@ -16,6 +16,7 @@ enum class Motif(
     EAGLES("Adler", R.drawable.ic_motif_eagle, 0xFFDC2626),
     OTHER_ANIMALS("Sonstige Tiere", R.drawable.ic_motif_other, 0xFF16A34A),
     LANDSCAPE("Landschaft & Strände", R.drawable.ic_motif_landscape, 0xFF3E6B35),
+    NIGHT_SKY("Nordlichter & Nachthimmel", R.drawable.ic_motif_night, 0xFF1E2A78),
     OTHER("Sonstiges", R.drawable.ic_motif_other, 0xFF6B7280);
 
     companion object {
