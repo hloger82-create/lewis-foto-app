@@ -190,6 +190,20 @@ fun LewisFotoNav(viewModel: AppViewModel) {
             composable("settings") {
                 SettingsScreen(viewModel = viewModel)
             }
+            composable("pickmap") {
+                MapScreen(
+                    viewModel = viewModel,
+                    motif = null,
+                    onSpotClick = {},
+                    onBack = { navController.popBackStack() },
+                    pickMode = true,
+                    onPick = { lat, lon ->
+                        navController.navigate("addspot?lat=$lat&lon=$lon") {
+                            popUpTo("pickmap") { inclusive = true }
+                        }
+                    }
+                )
+            }
             composable(
                 route = "addspot?lat={lat}&lon={lon}",
                 arguments = listOf(
