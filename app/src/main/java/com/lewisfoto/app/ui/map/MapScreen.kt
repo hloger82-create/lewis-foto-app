@@ -138,12 +138,12 @@ fun MapScreen(
             val zoomListener = object : MapListener {
                 override fun onScroll(event: ScrollEvent?): Boolean = false
                 override fun onZoom(event: ZoomEvent?): Boolean {
-                    zoomBig = mapView.zoomLevelDouble >= 15.0
+                    zoomBig = mapView.zoomLevelDouble >= 14.0
                     return false
                 }
             }
             mapView.addMapListener(zoomListener)
-            zoomBig = mapView.zoomLevelDouble >= 15.0
+            zoomBig = mapView.zoomLevelDouble >= 14.0
         }
     }
 
