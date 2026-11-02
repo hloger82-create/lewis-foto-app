@@ -122,7 +122,7 @@ fun UserSpotDetailScreen(
             }
 
             DetailCard(title = "Foto-Technik – Profitipps") {
-                PhotoTips.forMotif(spot.motif).forEach { Text("• $it", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 2.dp)) }
+                PhotoTips.forSpot(spot.id, spot.motif).forEach { Text("• $it", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 2.dp)) }
             }
 
             DetailCard(title = "Tipps zur Location") {

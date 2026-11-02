@@ -224,7 +224,7 @@ fun SpotDetailScreen(
 
                 ExpandableSectionCard(title = "Foto-Technik – Profitipps", icon = Icons.Filled.PhotoCamera) {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        PhotoTips.forMotif(spot.motif).forEach { tip ->
+                        PhotoTips.forSpot(spot).forEach { tip ->
                             Text(text = "• $tip", style = MaterialTheme.typography.bodySmall)
                         }
                     }
