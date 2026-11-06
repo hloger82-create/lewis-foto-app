@@ -347,7 +347,8 @@ fun MapScreen(
         onDispose { mapView.overlays.removeAll { it is Marker } }
     }
 
-    // Long-Press auf Stecknadel -> InfoWindow (Kurzbeschreibung) anzeigen
+    // Long-Press auf Stecknadel -> InfoWindow (Kurzbeschreibung) anzeigen.
+    // Muss als ERSTES Overlay registriert sein, damit osmdroid es vor den Markern auf LongPress prueft.
     DisposableEffect(Unit) {
         val lp = object : org.osmdroid.views.overlay.Overlay() {
             override fun onLongPress(e: android.view.MotionEvent?, mv: MapView?): Boolean {
@@ -356,9 +357,10 @@ fun MapScreen(
                 val hit = mv.overlays.filterIsInstance<Marker>().firstOrNull { m ->
                     val p = mv.projection.toPixels(m.position, null) as android.graphics.Point
                     val icon = m.icon ?: return@firstOrNull false
-                    val b = icon.bounds
-                    val w = b.width().coerceAtLeast(24); val h = b.height().coerceAtLeast(24)
-                    px in (p.x - w/2 - 8)..(p.x + w/2 + 8) && py in (p.y - h - 8)..(p.y + 8)
+                    val w = icon.intrinsicWidth.coerceAtLeast(48)
+                    val h = icon.intrinsicHeight.coerceAtLeast(48)
+                    // Marker-Anker ist ANCHOR_CENTER/ANCHOR_BOTTOM -> Spitze unten am Punkt
+                    px in (p.x - w/2 - 10)..(p.x + w/2 + 10) && py in (p.y - h - 10)..(p.y + 10)
                 }
                 if (hit != null) {
                     hit.showInfoWindow()
@@ -367,7 +369,7 @@ fun MapScreen(
                 return false
             }
         }
-        mapView.overlays.add(lp)
+        mapView.overlays.add(0, lp)
         onDispose { mapView.overlays.remove(lp) }
     }
 
