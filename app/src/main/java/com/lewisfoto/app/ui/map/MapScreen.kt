@@ -132,7 +132,7 @@ fun MapScreen(
     var activeFilter by remember { mutableStateOf(motif) }
     var radarOn by remember { mutableStateOf(false) }
     var zoomBig by remember { mutableStateOf(false) }
-    var highlightedId by remember { mutableStateOf<String?>(null) }
+    var highlightedId by remember { mutableStateOf(viewModel.lastHighlightedId) }
     var radarFrames by remember { mutableStateOf<Pair<String, List<String>>?>(null) }
     var headingDeg by remember { mutableStateOf(0f) }
     var myLocation by remember { mutableStateOf<GeoPoint?>(null) }
@@ -228,8 +228,8 @@ fun MapScreen(
             setMultiTouchControls(true)
             minZoomLevel = 7.0
             maxZoomLevel = 18.0
-            controller.setZoom(8.5)
-            controller.setCenter(GeoPoint(57.98, -6.75))
+            controller.setZoom(viewModel.lastMapZoom)
+            controller.setCenter(GeoPoint(viewModel.lastMapCenterLat, viewModel.lastMapCenterLon))
             val zoomListener = object : MapListener {
                 override fun onScroll(event: ScrollEvent?): Boolean = false
                 override fun onZoom(event: ZoomEvent?): Boolean {
@@ -239,6 +239,26 @@ fun MapScreen(
             }
             addMapListener(zoomListener)
             zoomBig = zoomLevelDouble >= 14.0
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.lastMapZoom = mapView.zoomLevelDouble
+            viewModel.lastMapCenterLat = mapView.mapCenter.latitude
+            viewModel.lastMapCenterLon = mapView.mapCenter.longitude
+            viewModel.lastHighlightedId = highlightedId
+        }
+    }
+
+    // Nach Detail-Schliessen: nicht ganz rauszoomen, sondern alle sichtbaren Spots ins Bild passen
+    LaunchedEffect(Unit) {
+        if (viewModel.lastHighlightedId != null && visibleOrdered.size > 1) {
+            kotlinx.coroutines.delay(400)
+            val pts = visibleOrdered.map { GeoPoint(viewModel.coordsOf(it).first, viewModel.coordsOf(it).second) }
+            if (pts.isNotEmpty()) mapView.zoomToBoundingBox(
+                org.osmdroid.util.BoundingBox.fromGeoPoints(pts), false, 60
+            )
         }
     }
 
@@ -282,8 +302,12 @@ fun MapScreen(
                 snippet = "${spot.motif.labelDe} · ${rating?.probability ?: 0} %"
                 icon = coloredPin(context, spot.motif, if (spot.id == highlightedId) 2.5f else if (zoomBig) 2f else 1f)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                setOnMarkerClickListener { _, _ ->
+                setOnMarkerClickListener { m, _ ->
                     onSpotClick(spot)
+                    true
+                }
+                setOnMarkerLongClickListener { m, _ ->
+                    m.showInfoWindow()
                     true
                 }
             }
@@ -429,7 +453,7 @@ fun MapScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1f, fill = true)
                     .clip(RoundedCornerShape(8.dp))
             ) {
                 AndroidView(factory = { mapView }, modifier = Modifier.fillMaxSize())
@@ -513,6 +537,7 @@ fun MapScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(0.45f)
+                        .padding(bottom = 4.dp)
                 ) {
                     items(visibleOrdered, key = { it.id }) { spot ->
                         SpotListItem(
@@ -528,7 +553,8 @@ fun MapScreen(
                             onLongPress = {
                                 highlightedId = spot.id
                                 val (la, lo) = viewModel.coordsOf(spot)
-                                if (mapView.zoomLevelDouble < 15.0) mapView.controller.setZoom(15.0)
+                                val target = (mapView.zoomLevelDouble + 2.5).coerceAtMost(15.0)
+                                mapView.controller.setZoom(target)
                                 mapView.controller.animateTo(GeoPoint(la, lo))
                             }
                         )

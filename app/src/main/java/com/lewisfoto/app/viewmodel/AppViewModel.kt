@@ -100,5 +100,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun userSpotById(id: String): UserSpot? = userSpots.value.firstOrNull { it.id == id }
 
+    // Karten-Zustand bleibt beim Oeffnen/Schliessen von Details erhalten
+    var lastMapZoom: Double = 8.5
+    var lastMapCenterLat: Double = 57.98
+    var lastMapCenterLon: Double = -6.75
+    var lastHighlightedId: String? = null
+
     fun reloadUserSpots() { /* StateFlow aktualisiert sich ueber DataStore automatisch */ }
 }
