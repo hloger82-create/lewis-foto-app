@@ -306,10 +306,7 @@ fun MapScreen(
                     onSpotClick(spot)
                     true
                 }
-                setOnMarkerLongClickListener { m: Marker, _: MapView ->
-                    m.showInfoWindow()
-                    true
-                }
+
             }
             mapView.overlays.add(marker)
         }
@@ -348,6 +345,30 @@ fun MapScreen(
         }
         mapView.invalidate()
         onDispose { mapView.overlays.removeAll { it is Marker } }
+    }
+
+    // Long-Press auf Stecknadel -> InfoWindow (Kurzbeschreibung) anzeigen
+    DisposableEffect(Unit) {
+        val lp = object : org.osmdroid.views.overlay.Overlay() {
+            override fun onLongPress(e: android.view.MotionEvent?, mv: MapView?): Boolean {
+                if (mv == null || e == null) return false
+                val px = e.x.toInt(); val py = e.y.toInt()
+                val hit = mv.overlays.filterIsInstance<Marker>().firstOrNull { m ->
+                    val p = mv.projection.toPixels(m.position, null) as android.graphics.Point
+                    val icon = m.icon ?: return@firstOrNull false
+                    val b = icon.bounds
+                    val w = b.width().coerceAtLeast(24); val h = b.height().coerceAtLeast(24)
+                    px in (p.x - w/2 - 8)..(p.x + w/2 + 8) && py in (p.y - h - 8)..(p.y + 8)
+                }
+                if (hit != null) {
+                    hit.showInfoWindow()
+                    return true
+                }
+                return false
+            }
+        }
+        mapView.overlays.add(lp)
+        onDispose { mapView.overlays.remove(lp) }
     }
 
     // Pick-Mode: Long-Tap setzt Punkt (einmalig registriert, onPick ueber State gehalten)
