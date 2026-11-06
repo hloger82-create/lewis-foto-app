@@ -306,7 +306,7 @@ fun MapScreen(
                     onSpotClick(spot)
                     true
                 }
-                setOnMarkerLongClickListener { m, _ ->
+                setOnMarkerLongClickListener { m: Marker, _: MapView ->
                     m.showInfoWindow()
                     true
                 }
