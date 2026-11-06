@@ -571,6 +571,7 @@ private fun coloredPin(context: android.content.Context, motif: Motif, scale: Fl
     return BitmapDrawable(context.resources, bmp)
 }
 
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 private fun SpotListItem(
     spot: FotoSpot,
