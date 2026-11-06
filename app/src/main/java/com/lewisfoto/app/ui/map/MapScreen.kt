@@ -558,7 +558,7 @@ fun MapScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(0.45f)
-                        .padding(bottom = 4.dp)
+                        .padding(bottom = 8.dp)
                 ) {
                     items(visibleOrdered, key = { it.id }) { spot ->
                         SpotListItem(
