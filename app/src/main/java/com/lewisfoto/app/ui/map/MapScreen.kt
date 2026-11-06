@@ -23,6 +23,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -131,6 +132,7 @@ fun MapScreen(
     var activeFilter by remember { mutableStateOf(motif) }
     var radarOn by remember { mutableStateOf(false) }
     var zoomBig by remember { mutableStateOf(false) }
+    var highlightedId by remember { mutableStateOf<String?>(null) }
     var radarFrames by remember { mutableStateOf<Pair<String, List<String>>?>(null) }
     var headingDeg by remember { mutableStateOf(0f) }
     var myLocation by remember { mutableStateOf<GeoPoint?>(null) }
@@ -269,7 +271,7 @@ fun MapScreen(
         }
     }
 
-    DisposableEffect(visibleSpots, customCoords, zoomBig, userSpots, pickMode, myLocation) {
+    DisposableEffect(visibleSpots, customCoords, zoomBig, userSpots, pickMode, myLocation, highlightedId) {
         mapView.overlays.removeAll { it is Marker }
         visibleSpots.forEach { spot ->
             val marker = Marker(mapView).apply {
@@ -278,7 +280,7 @@ fun MapScreen(
                 title = spot.name
                 val rating = spot.ratingFor(tripSeason)
                 snippet = "${spot.motif.labelDe} · ${rating?.probability ?: 0} %"
-                icon = coloredPin(context, spot.motif, if (zoomBig) 2f else 1f)
+                icon = coloredPin(context, spot.motif, if (spot.id == highlightedId) 2.5f else if (zoomBig) 2f else 1f)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 setOnMarkerClickListener { _, _ ->
                     onSpotClick(spot)
@@ -516,11 +518,18 @@ fun MapScreen(
                         SpotListItem(
                             spot = spot,
                             season = tripSeason,
+                            highlighted = spot.id == highlightedId,
                             onClick = {
                                 if (spot.id.startsWith("user_")) {
                                     val us = userSpots.firstOrNull { it.id == spot.id }
                                     if (us != null) onUserSpotClick(us) else onSpotClick(spot)
                                 } else onSpotClick(spot)
+                            },
+                            onLongPress = {
+                                highlightedId = spot.id
+                                val (la, lo) = viewModel.coordsOf(spot)
+                                if (mapView.zoomLevelDouble < 15.0) mapView.controller.setZoom(15.0)
+                                mapView.controller.animateTo(GeoPoint(la, lo))
                             }
                         )
                     }
@@ -566,17 +575,25 @@ private fun coloredPin(context: android.content.Context, motif: Motif, scale: Fl
 private fun SpotListItem(
     spot: FotoSpot,
     season: com.lewisfoto.app.data.Season,
-    onClick: () -> Unit
+    highlighted: Boolean = false,
+    onClick: () -> Unit,
+    onLongPress: () -> Unit = {}
 ) {
     val isUser = spot.id.startsWith("user_")
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (isUser) Modifier.border(1.5.dp, Color(0xFFE9762B), RoundedCornerShape(10.dp))
-                else Modifier
+                when {
+                    highlighted -> Modifier.border(2.5.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                    isUser -> Modifier.border(1.5.dp, Color(0xFFE9762B), RoundedCornerShape(10.dp))
+                    else -> Modifier
+                }
             )
-            .clickable(onClick = onClick),
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongPress
+            ),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
